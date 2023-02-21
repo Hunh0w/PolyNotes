@@ -2,22 +2,28 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
 import WelcomePage from "./pages/welcome";
 import ErrorPage from "./pages/errors";
+import LoginPage from './pages/authentication/login';
+import RegisterPage from './pages/authentication/register';
+import PrimarySearchAppBar from './components/header';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
 const router = createBrowserRouter(
-    createRoutesFromElements(
-        <Route
-            path={"/"}
-            element={<WelcomePage />}
-            errorElement={<ErrorPage />}
-        />
-    )
+  createRoutesFromElements(
+    <Route
+      path={"/"}
+      errorElement={<ErrorPage />}
+    >
+      <Route index={true} element={<WelcomePage />} />
+      <Route path={"login"} element={<LoginPage />} />
+      <Route path={"register"} element={<RegisterPage />} />
+    </Route>
+  )
 )
 
 root.render(
