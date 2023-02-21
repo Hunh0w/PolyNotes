@@ -1,4 +1,4 @@
-import { Box, Button, Container, Divider, TextField, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Container, Divider, FormControlLabel, Link, TextField, Typography } from "@mui/material";
 import PasswordArea from "../../components/inputs/PasswordInput";
 
 export default function RegisterPage() {
@@ -35,7 +35,10 @@ export default function RegisterPage() {
                 <PasswordArea sx={{ "width": "300px" }}>Password</PasswordArea>
                 <PasswordArea sx={{ "width": "300px" }}>Password Confirmation</PasswordArea>
             </Box>
-            <Button variant="contained" size="large" sx={{ mt: 5 }}>Connexion</Button>
+            <Box mt={3} display={"flex"} flexDirection={"column"} alignItems={"center"}>
+                <FormControlLabel control={<Checkbox defaultChecked />} label={<span>J'accepte les <Link href="#">CGU</Link></span>} />
+                <Button variant="contained" size="large" sx={{ mt: 1 }}>Connexion</Button>
+            </Box>
         </Box>
     </Container>
 }
