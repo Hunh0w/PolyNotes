@@ -2,15 +2,17 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
 import { useState } from "react";
 
-interface Error {
-    message: string
+export interface InputError {
+    message?: string
 }
 
 interface Props {
     defaultValue?: string
     children: string
     onClick?: (evt: MouseEvent) => void
-    error?: Error
+    error?: InputError
+    inputRef?: any
+    onChange?: any
     sx?: any
 }
 
@@ -34,6 +36,8 @@ export default function PasswordArea(props: Props) {
             error={props.error ? true : false}
             id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
+            inputRef={props.inputRef}
+            onChange={props.onChange}
             endAdornment={
                 <InputAdornment position="end">
                     <IconButton

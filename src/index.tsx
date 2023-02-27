@@ -8,6 +8,7 @@ import ErrorPage from "./pages/errors";
 import LoginPage from './pages/authentication/login';
 import RegisterPage from './pages/authentication/register';
 import PrimarySearchAppBar from './components/header';
+import DashboardPage from "./pages/main/dashboard";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -19,9 +20,10 @@ const router = createBrowserRouter(
       path={"/"}
       errorElement={<ErrorPage />}
     >
-      <Route index={true} element={<WelcomePage />} />
-      <Route path={"login"} element={<LoginPage />} />
-      <Route path={"register"} element={<RegisterPage />} />
+        <Route index={true} element={<WelcomePage />} />
+        <Route path={"login"} element={<LoginPage />} />
+        <Route path={"register"} element={<RegisterPage />} />
+        <Route path={"dashboard"} element={<DashboardPage />} />
     </Route>
   )
 )
