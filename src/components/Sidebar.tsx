@@ -244,7 +244,7 @@ export default function MiniDrawer(props: Props) {
                 <List>
                     <NestedList icon={<Folder />} text={"Workspaces"} open={workspacesOpen} toggleOpen={toggleWorkspacesOpen}>
                         {["1", "2", "3", "4"].map((value, index) => (
-                            <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemButton sx={{ pl: 4 }} key={index}>
                                 <ListItemIcon>
                                     <Article />
                                 </ListItemIcon>
@@ -254,7 +254,7 @@ export default function MiniDrawer(props: Props) {
                     </NestedList>
                     <NestedList icon={<Share />} text={"Shared with Me"} open={sharedOpen} toggleOpen={toggleSharedOpen}>
                         {["5", "6", "7", "8"].map((value, index) => (
-                            <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemButton sx={{ pl: 4 }} key={index}>
                                 <ListItemIcon>
                                     <Article />
                                 </ListItemIcon>

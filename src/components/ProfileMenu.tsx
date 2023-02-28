@@ -16,9 +16,13 @@ import IconButton from "@mui/material/IconButton";
 import * as React from "react";
 import {Logout, Person, Person2, PersonAdd, Settings} from "@mui/icons-material";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import {useNavigate} from "react-router-dom";
 
 
 export default function ProfileMenu(props: {}){
+
+    const navigate = useNavigate();
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,6 +31,11 @@ export default function ProfileMenu(props: {}){
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const onLogout = () => {
+        localStorage.removeItem("access_token");
+        navigate("/")
+    }
 
     return <>
         <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -100,7 +109,7 @@ export default function ProfileMenu(props: {}){
                 </ListItemIcon>
                 Settings
             </MenuItem>
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={onLogout}>
                 <ListItemIcon>
                     <Logout fontSize="small" />
                 </ListItemIcon>

@@ -10,15 +10,13 @@ export default function DashboardPage(){
     const navigate = useNavigate();
 
     useEffect(() => {
-        isConnected().then(connected => {
-            if(!connected)
-                navigate("/")
-        })
-    }, [navigate]);
+        const token = localStorage.getItem("access_token");
+        if(!token) {
+            navigate("/")
+        }
+    }, []);
 
-    return <>
-        <MiniDrawer>
 
-        </MiniDrawer>
-    </>
+    return <MiniDrawer>
+    </MiniDrawer>
 }
