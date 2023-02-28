@@ -12,3 +12,15 @@ export function isConnected(): Promise<Boolean> {
         }
     }).then(resp => resp.status === 200);
 }
+
+export function getProfileInfos() {
+    const token = localStorage.getItem("access_token");
+    if(!token) return undefined;
+
+    return JSON.parse(b64_to_utf8(token.split(".")[1]));
+}
+
+
+function b64_to_utf8(str: string) {
+    return decodeURIComponent(escape(window.atob(str)));
+}

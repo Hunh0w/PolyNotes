@@ -67,7 +67,7 @@ export default function LoginPage() {
                 token = token.split(" ")[1];
 
                 localStorage.setItem("access_token", token);
-                navigate("/dashboard")
+                navigate("/home")
             }
         })
     }

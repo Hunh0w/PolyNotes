@@ -1,25 +1,26 @@
 import {
     Avatar,
     Box,
-    ClickAwayListener,
     Divider,
-    Grow,
     ListItemIcon,
     Menu,
     MenuItem,
-    MenuList,
-    Paper,
-    Popper, Tooltip, Typography
+    Tooltip, Typography
 } from "@mui/material";
 import {green} from "@mui/material/colors";
 import IconButton from "@mui/material/IconButton";
 import * as React from "react";
-import {Logout, Person, Person2, PersonAdd, Settings} from "@mui/icons-material";
+import {Logout, Person, Settings} from "@mui/icons-material";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import {useNavigate} from "react-router-dom";
 
+interface Props {
+    letters?: string
+    color?: string
+    nickname?: string
+}
 
-export default function ProfileMenu(props: {}){
+export default function ProfileMenu(props: Props){
 
     const navigate = useNavigate();
 
@@ -48,7 +49,7 @@ export default function ProfileMenu(props: {}){
                     aria-haspopup="true"
                     color="inherit"
                 >
-                    <Avatar sx={{ bgcolor: green[500], display: { xs: 'none', md: 'flex' } }}>VF</Avatar>
+                    <Avatar sx={{ bgcolor: props.color??green[500], display: { xs: 'none', md: 'flex' } }}>{props.letters??"DD"}</Avatar>
                     <MoreIcon sx={{ display: { xs: 'flex', md: 'none' }, color: "black" }} />
                 </IconButton>
             </Tooltip>
@@ -91,7 +92,7 @@ export default function ProfileMenu(props: {}){
             <MenuItem>
                 <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", px: 3}}>
                     <Typography variant={"h5"} fontWeight={"bold"}>
-                        Font Vincent
+                        {props.nickname??"Font Vincent"}
                     </Typography>
                 </Box>
             </MenuItem>

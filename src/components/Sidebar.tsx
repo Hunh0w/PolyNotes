@@ -5,37 +5,29 @@ import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import {Avatar, Button, ButtonBase} from "@mui/material";
-import {green} from "@mui/material/colors";
-import MoreIcon from "@mui/icons-material/MoreVert";
+import {ButtonBase} from "@mui/material";
 import NestedList from "./NestedList";
 import {
-    AccessTime,
+    Restore,
     Article,
-    BackupTable,
-    Delete, DeleteOutlined,
+    Delete,
     Folder,
     Share,
     Star,
-    StarBorder,
-    Workspaces
 } from "@mui/icons-material";
 import ProfileMenu from "./ProfileMenu";
+import {getProfileInfos} from "../utils/auth-manager";
 
 const drawerWidth = 240;
 
@@ -159,17 +151,26 @@ const StyledButton = styled(ButtonBase)(({ theme }) => ({
     border: "2px solid black"
 }));
 
+function capitalize(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 interface Props {
     children?: React.ReactNode
 }
 
-export default function MiniDrawer(props: Props) {
+export default function Sidebar(props: Props) {
     const theme = useTheme();
 
     const [open, setOpen] = React.useState(true);
 
     const [workspacesOpen, setWorkspacesOpen] = React.useState(true);
     const [sharedOpen, setSharedOpen] = React.useState(true);
+
+    const profileInfos = getProfileInfos();
+    if(!profileInfos) return <></>
+    const firstletters = profileInfos.given_name.charAt(0).toUpperCase() + profileInfos.family_name.charAt(0).toUpperCase();
+    const nickname = capitalize(profileInfos.family_name) + " " + capitalize(profileInfos.given_name);
 
     const toggleWorkspacesOpen = () => {
         if(!open && !workspacesOpen) return;
@@ -225,7 +226,10 @@ export default function MiniDrawer(props: Props) {
                     </Search>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box>
-                        <ProfileMenu />
+                        <ProfileMenu
+                            letters={firstletters}
+                            nickname={nickname}
+                            color={"#a200ca"} />
                     </Box>
                 </Toolbar>
             </AppBar>
@@ -267,7 +271,7 @@ export default function MiniDrawer(props: Props) {
                 <List>
                     <ListItemButton sx={{ pl: (open?4:2) }}>
                         <ListItemIcon>
-                            <AccessTime />
+                            <Restore />
                         </ListItemIcon>
                         <ListItemText primary={"Recent"} />
                     </ListItemButton>
