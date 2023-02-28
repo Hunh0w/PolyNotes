@@ -7,7 +7,6 @@ import WelcomePage from "./pages/welcome";
 import ErrorPage from "./pages/errors";
 import LoginPage from './pages/authentication/login';
 import RegisterPage from './pages/authentication/register';
-import PrimarySearchAppBar from './components/header';
 import DashboardPage from "./pages/main/dashboard";
 
 const root = ReactDOM.createRoot(

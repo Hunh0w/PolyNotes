@@ -1,6 +1,6 @@
 import { Box, Button, Container, Divider, TextField, Typography } from "@mui/material";
 import PasswordArea from "../../components/inputs/PasswordInput";
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {url} from "../../utils/conf";
 import {useNavigate} from "react-router-dom";
 
