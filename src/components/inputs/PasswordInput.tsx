@@ -30,7 +30,7 @@ export default function PasswordArea(props: Props) {
         event.preventDefault();
     };
 
-    return <FormControl sx={{ m: 1, width: '25ch', ...props.sx }} variant="outlined">
+    return <FormControl sx={{ m: 1, width: '25ch', ...props.sx }} variant="outlined" error={props.error ? true : false}>
         <InputLabel htmlFor="outlined-adornment-password" color={props.error ? "error" : "primary"}>{props.children}</InputLabel>
         <OutlinedInput
             error={props.error ? true : false}

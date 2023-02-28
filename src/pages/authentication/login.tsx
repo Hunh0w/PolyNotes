@@ -1,5 +1,5 @@
 import { Box, Button, Container, Divider, TextField, Typography } from "@mui/material";
-import PasswordArea from "../../components/inputs/PasswordInput";
+import PasswordArea, {InputError} from "../../components/inputs/PasswordInput";
 import {useRef, useState} from "react";
 import {url} from "../../utils/conf";
 import {useNavigate} from "react-router-dom";
@@ -12,7 +12,7 @@ export default function LoginPage() {
     const password_ref = useRef(null);
 
     const [emailError, setEmailError] = useState<string | undefined>(undefined);
-    const [passwordError, setPasswordError] = useState<string | undefined>(undefined);
+    const [passwordError, setPasswordError] = useState<InputError | undefined>(undefined);
 
     const [apiError, setApiError] = useState<string | undefined>(undefined);
 
@@ -28,7 +28,7 @@ export default function LoginPage() {
         }
 
         if(password.value === ""){
-            setPasswordError("cannot be empty")
+            setPasswordError({message: "cannot be empty"})
             pass = false;
         }
 
@@ -97,10 +97,11 @@ export default function LoginPage() {
                     label="E-Mail Address"
                     sx={{ "width": "300px" }}
                     onChange={() => resetError(emailError, setEmailError)}
+                    helperText={emailError}
                 />
             </Box>
             <Box display={"flex"} flexDirection="column" alignItems="center" width={"100%"} mt={3}>
-                <PasswordArea sx={{ "width": "300px" }} onChange={() => resetError(passwordError, setPasswordError)} inputRef={password_ref}>Password</PasswordArea>
+                <PasswordArea sx={{ "width": "300px" }} error={passwordError} onChange={() => resetError(passwordError, setPasswordError)} inputRef={password_ref}>Password</PasswordArea>
             </Box>
             <Button variant="contained" size="large" sx={{ mt: 5 }} onClick={login}>Sign In</Button>
         </Box>
