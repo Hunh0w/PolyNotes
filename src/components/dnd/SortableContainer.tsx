@@ -6,9 +6,7 @@ import BaseBlock from "../blocks/BaseBlock";
 import {Box} from "@mui/material";
 
 const containerStyle = {
-    background: "rgba(0,0,0,0.1)",
-    padding: 10,
-    margin: 5,
+    //background: "rgba(0,0,0,0.1)",
     width: "100%",
     height: "auto"
 };

@@ -15,6 +15,7 @@ export default abstract class BaseBlock {
     }
 
     abstract getComponent(): ReactNode;
+    abstract getType(): string;
 
 }
 

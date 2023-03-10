@@ -31,8 +31,8 @@ export default function TestPage(){
 
     const blocks = [
         new HeaderTextBlock("Test1", "h2"),
-        new HeaderTextBlock("Test2", "h2"),
-        new HeaderTextBlock("Test3", "h2")
+        new HeaderTextBlock("Test2", "h4"),
+        new HeaderTextBlock("Test3", "h1")
     ]
 
     useEffect(() => {

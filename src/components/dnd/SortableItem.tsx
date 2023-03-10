@@ -4,22 +4,29 @@ import React from "react";
 import BaseBlock from "../blocks/BaseBlock";
 import {Box, Button} from "@mui/material";
 
-export function Item(props: {block: BaseBlock}) {
+export function Item(props: {block: BaseBlock, attributes: any, listeners: any, setNodeRef: any}) {
     const { block } = props;
 
     const style = {
         width: "100%",
         height: "auto",
         display: "flex",
-        alignItems: "center",
+        alignItems: "start",
         justifyContent: "center",
-        border: "1px solid black",
         margin: "10px 0"
     };
 
-    return <div style={style}>
+    return <Box style={style} flexDirection={"row"}>
+        <button className="DragHandle" style={{"height": "40px"}}>
+            +
+        </button>
+        <button className="DragHandle" {...props.attributes} {...props.listeners} ref={props.setNodeRef} style={{"height": "40px"}}>
+            <svg viewBox="0 0 20 20" width="12">
+                <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z"></path>
+            </svg>
+        </button>
         {block.getComponent()}
-    </div>;
+    </Box>;
 }
 
 export default function SortableItem(props: {block: BaseBlock}) {
@@ -37,9 +44,8 @@ export default function SortableItem(props: {block: BaseBlock}) {
     };
 
     return (
-        <Box display={"flex"} flexDirection={"row"} height={"auto"} justifyContent={"center"} alignItems={"center"} style={style} {...attributes}>
-            <Button ref={setNodeRef}  {...listeners} sx={{"height": "50px"}}>move</Button>
-            <Item block={props.block} />
+        <Box style={style} {...attributes}>
+            <Item block={props.block} attributes={attributes} listeners={listeners} setNodeRef={setNodeRef} />
         </Box>
     );
 }

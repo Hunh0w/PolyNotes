@@ -25,7 +25,7 @@ export interface ItemMatrix {
     root: BaseBlock[]
     container1: BaseBlock[]
     container2: BaseBlock[]
-    container3: BaseBlock[]
+    //container3: BaseBlock[]
 }
 interface Props {
     blocks: BaseBlock[]
@@ -35,8 +35,8 @@ export default function SortableMatrix(props: Props) {
     const [items, setItems] = useState<ItemMatrix>({
         root: [props.blocks[0]],
         container1: [props.blocks[1]],
-        container2: [props.blocks[2]],
-        container3: []
+        container2: [props.blocks[2]]
+        //container3: []
     });
     const [activeBlock, setActiveBlock] = useState<BaseBlock | null>();
 
@@ -56,11 +56,13 @@ export default function SortableMatrix(props: Props) {
                 <SortableContainer id="root" items={items.root} />
                 <SortableContainer id="container1" items={items.container1} />
                 <SortableContainer id="container2" items={items.container2} />
-                <SortableContainer id="container3" items={items.container3} />
-                <DragOverlay>{activeBlock ? <Button>{activeBlock.type}</Button> : null}</DragOverlay>
+
+                <DragOverlay>{activeBlock ? <h4>{activeBlock.getType()}</h4> : null}</DragOverlay>
             </DndContext>
         </Box>
     );
+
+    // <SortableContainer id="container3" items={items.container3} />
 
     function findContainer(id: UniqueIdentifier) {
         if (id in items) {
@@ -77,7 +79,6 @@ export default function SortableMatrix(props: Props) {
         if(!activeContainer) return;
 
         const activeBlock = items[activeContainer].find(block => block.id === id);
-        console.log(activeBlock)
 
         setActiveBlock(activeBlock);
     }
@@ -103,8 +104,6 @@ export default function SortableMatrix(props: Props) {
         const activeBlock = items[activeContainer].find(block => block.id === id);
         const overBlock = items[overContainer].find(block => block.id === overId);
         if(!activeBlock) return;
-
-        console.log(overContainer)
 
         setItems((prev) => {
             const activeItems = prev[activeContainer];
