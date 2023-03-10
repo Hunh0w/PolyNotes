@@ -1,0 +1,27 @@
+import {ReactNode} from "react";
+import {UniqueIdentifier} from "@dnd-kit/core";
+
+let idRef = 0;
+
+export default abstract class BaseBlock {
+
+    id: UniqueIdentifier
+    type: BlockType;
+
+    constructor(type: BlockType) {
+        this.type = type;
+        this.id = idRef;
+        idRef++;
+    }
+
+    abstract getComponent(): ReactNode;
+
+}
+
+export type BlockType = (
+    // Primary Types
+    "headerText" | "image" | "paragraph" |
+
+    // Advanced Types
+    "list" | "database"
+);
