@@ -12,8 +12,9 @@ import {
     useDraggable,
     useDroppable, useSensor, useSensors
 } from "@dnd-kit/core";
-import SortableMatrix from "../components/dnd/SortableMatrix";
+import SortableMatrix, {ItemMatrix} from "../components/dnd/SortableMatrix";
 import HeaderTextBlock from "../components/blocks/impl/HeaderTextBlock";
+import BaseBlock from "../components/blocks/BaseBlock";
 
 const dropAnimationConfig: DropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
@@ -25,14 +26,24 @@ const dropAnimationConfig: DropAnimation = {
     })
 };
 
+function getContainersFromMatrix(blocks: BaseBlock[][]): ItemMatrix {
+    let obj: ItemMatrix = {};
+    for(let i = 0; i < blocks.length; i++){
+        const container = blocks[i];
+        obj["container"+i] = container;
+    }
+    return obj;
+}
+
 export default function TestPage(){
 
     const navigate = useNavigate();
 
     const blocks = [
-        new HeaderTextBlock("Test1", "h2"),
-        new HeaderTextBlock("Test2", "h4"),
-        new HeaderTextBlock("Test3", "h1")
+        [new HeaderTextBlock("Test1", "h2")],
+        [new HeaderTextBlock("Test2", "h4")],
+        [new HeaderTextBlock("Test2", "h6")],
+        [new HeaderTextBlock("Test3", "h1")]
     ]
 
     useEffect(() => {
@@ -42,49 +53,8 @@ export default function TestPage(){
 
     return (
         <Sidebar>
-            <SortableMatrix blocks={blocks} />
+            <SortableMatrix blocks={getContainersFromMatrix(blocks)} />
         </Sidebar>
     );
 
-}
-
-function Droppable(props: {children: any}) {
-    const {isOver, setNodeRef} = useDroppable({
-        id: 'droppable',
-    });
-    const style = {
-        backgroundColor: isOver ? 'green' : 'red',
-    };
-
-    return (
-        <Container ref={setNodeRef} sx={{"height": "800px", ...style}}>
-            {props.children}
-        </Container>
-    );
-}
-
-
-export function Draggable(props: {children: any, id: number}) {
-    const {attributes, listeners, setNodeRef, transform} = useDraggable({
-        id: props.id,
-    });
-    const style_transform = transform ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`
-    } : undefined;
-
-    const style = {
-        cursor: "pointer",
-        width: "200px",
-        height: "200px",
-        backgroundColor: "purple",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-    }
-
-    return (
-        <Box ref={setNodeRef} style={{...style_transform, ...style}} {...listeners} {...attributes}>
-            {props.children}
-        </Box>
-    );
 }

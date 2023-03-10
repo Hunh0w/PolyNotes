@@ -22,27 +22,39 @@ import BaseBlock from "../blocks/BaseBlock";
 
 export interface ItemMatrix {
     [propKey: string]: BaseBlock[]
+    /*
     root: BaseBlock[]
     container1: BaseBlock[]
     container2: BaseBlock[]
     //container3: BaseBlock[]
+    */
 }
 interface Props {
-    blocks: BaseBlock[]
+    blocks: ItemMatrix
 }
+/*
+    root: props.blocks,
+    container1: [],
+    container2: []
+    //container3: []
+*/
+
+
 
 export default function SortableMatrix(props: Props) {
-    const [items, setItems] = useState<ItemMatrix>({
-        root: [props.blocks[0]],
-        container1: [props.blocks[1]],
-        container2: [props.blocks[2]]
-        //container3: []
-    });
+
+    const [items, setItems] = useState<ItemMatrix>(props.blocks);
     const [activeBlock, setActiveBlock] = useState<BaseBlock | null>();
 
     const sensors = useSensors(
         useSensor(PointerSensor)
     );
+
+    /*
+        <SortableContainer id="root" items={items.root} />
+        <SortableContainer id="container1" items={items.container1} />
+        <SortableContainer id="container2" items={items.container2} />
+     */
 
     return (
         <Box display={"flex"} flexDirection={"row"} width={"100%"}>
@@ -53,9 +65,9 @@ export default function SortableMatrix(props: Props) {
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <SortableContainer id="root" items={items.root} />
-                <SortableContainer id="container1" items={items.container1} />
-                <SortableContainer id="container2" items={items.container2} />
+                {Object.keys(items).map(key => {
+                    return <SortableContainer id={key} key={key} items={items[key]} />
+                })}
 
                 <DragOverlay>{activeBlock ? <h4>{activeBlock.getType()}</h4> : null}</DragOverlay>
             </DndContext>
