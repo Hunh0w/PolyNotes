@@ -1,90 +1,106 @@
-import {KeyboardArrowLeft, KeyboardArrowRight} from "@mui/icons-material";
-import {Box, Button, Card, CardActions, CardContent, Container, MobileStepper, Paper, Typography} from "@mui/material";
-import React from "react";
-import {useTheme} from "@mui/material/styles";
+import {
+    Box,
+    Card,
+    CardActionArea,
+    CardContent, CardMedia,
+    Chip,
+    Container,
+    Grid,
+    Grow,
+    Slide,
+    SlideProps,
+    Typography
+} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import {ArrowLeft, ArrowRight} from "@mui/icons-material";
+import React, {useState} from "react";
 
-const images = [
-    {
-        label: 'San Francisco – Oakland Bay Bridge, United States',
-        imgPath:
-            'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bird',
-        imgPath:
-            'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bali, Indonesia',
-        imgPath:
-            'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250',
-    },
-    {
-        label: 'Goč, Serbia',
-        imgPath:
-            'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
-    },
+const elements = [
+    "coucou.pnote",
+    "hello.pnote",
+    "hola.pnote",
+    "welcome.pnote",
+    "bienvenue.pnote",
+    "moto.pnote",
+    "car.pnote",
+    "voiture.pnote",
+    "camion.pnote"
 ];
 
+interface Animation {
+    display: boolean
+    direction: "right" | "left"
+}
+
 export default function RecentFiles(props: {}) {
-    const theme = useTheme();
-    const [activeStep, setActiveStep] = React.useState(0);
-    const maxSteps = images.length;
 
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
+    const [page, setPage] = useState(0)
 
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
+    const [animation, setAnimation] = useState<Animation>({display: true, direction: "right"})
 
-    const handleStepChange = (step: number) => {
-        setActiveStep(step);
-    };
+    const getPageElements = () => {
+        const startIndex = page*4;
+        let element_list = [];
+        for(let i = 0; i < 4; i++){
+            const element = elements[startIndex+i]
+            element_list.push(element)
+        }
+        return element_list
+    }
 
-    return <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
-        <Paper
-            square
-            elevation={0}
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                height: 50,
-                pl: 2,
-                bgcolor: 'background.default',
-            }}
-        >
-        </Paper>
+    const prevPage = () => {
+        if(page <= 0) return;
+        setAnimation({display: false, direction: "left"})
 
-        <MobileStepper
-            steps={maxSteps}
-            position="static"
-            activeStep={activeStep}
-            nextButton={
-                <Button
-                    size="small"
-                    onClick={handleNext}
-                    disabled={activeStep === maxSteps - 1}
-                >
-                    Next
-                    {theme.direction === 'rtl' ? (
-                        <KeyboardArrowLeft />
-                    ) : (
-                        <KeyboardArrowRight />
-                    )}
-                </Button>
-            }
-            backButton={
-                <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-                    {theme.direction === 'rtl' ? (
-                        <KeyboardArrowRight />
-                    ) : (
-                        <KeyboardArrowLeft />
-                    )}
-                    Back
-                </Button>
-            }
-        />
+        setTimeout(() => {
+            setPage(page-1);
+            setAnimation({display: true, direction: "right"})
+        }, 250);
+    }
+
+    const nextPage = () => {
+        const startIndex = (page+1)*4;
+        if(elements.length-1 < startIndex)
+            return;
+        setAnimation({display: false, direction: "right"})
+        setTimeout(() => {
+            setPage(page+1);
+            setAnimation({display: true, direction: "left"})
+        }, 250);
+    }
+
+    return <Box display={"flex"} justifyContent={"center"} alignItems={"center"} mt={5}>
+        <IconButton onClick={prevPage}>
+            <ArrowLeft fontSize={"large"}  />
+        </IconButton>
+        <Grid container spacing={4} sx={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+            {getPageElements().map((value, index) => {
+                return <Slide in={animation.display} direction={animation.direction}>
+                    <Grid item key={index}>
+                        <Card sx={{width: "300px", height: "320px", "cursor": value?"pointer":"default"}} onClick={() => console.log("hello")}>
+                            <CardActionArea>
+                                {value && <>
+                                    <CardMedia
+                                        component="img"
+                                        height="250"
+                                        image="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
+                                        alt="file preview"
+                                    />
+                                    <CardContent sx={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            {value}
+                                        </Typography>
+                                    </CardContent>
+                                </>
+                                }
+                            </CardActionArea>
+                        </Card>
+                    </Grid>
+                </Slide>
+            })}
+        </Grid>
+        <IconButton onClick={nextPage}>
+            <ArrowRight fontSize={"large"}  />
+        </IconButton>
     </Box>
 }

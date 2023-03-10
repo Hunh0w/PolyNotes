@@ -11,9 +11,7 @@ export default function HomePage(){
 
     useEffect(() => {
         const token = localStorage.getItem("access_token");
-        if(!token) {
-            navigate("/")
-        }
+        if(!token) navigate("/")
     }, [navigate]);
 
     return <Sidebar>

@@ -8,6 +8,7 @@ import ErrorPage from "./pages/errors";
 import LoginPage from './pages/authentication/login';
 import RegisterPage from './pages/authentication/register';
 import HomePage from "./pages/main/home";
+import TestPage from "./pages/test";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -23,6 +24,7 @@ const router = createBrowserRouter(
         <Route path={"login"} element={<LoginPage />} />
         <Route path={"register"} element={<RegisterPage />} />
         <Route path={"home"} element={<HomePage />} />
+        <Route path={"test"} element={<TestPage />} />
     </Route>
   )
 )
