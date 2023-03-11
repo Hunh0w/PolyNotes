@@ -3,10 +3,8 @@ import {SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
 import React from "react";
 import SortableItem from "./SortableItem";
 import BaseBlock from "../blocks/BaseBlock";
-import {Box} from "@mui/material";
 
 const containerStyle = {
-    //background: "rgba(0,0,0,0.1)",
     width: "100%",
     height: "auto"
 };

@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
     DndContext,
-    KeyboardSensor,
     PointerSensor,
     useSensor,
     useSensors,
@@ -13,33 +12,17 @@ import {
 } from '@dnd-kit/core';
 import {
     arrayMove,
-    sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
-import {Box, Button} from "@mui/material";
+import {Box} from "@mui/material";
 import SortableContainer from "./SortableContainer";
-import {Item} from "./SortableItem";
 import BaseBlock from "../blocks/BaseBlock";
 
 export interface ItemMatrix {
     [propKey: string]: BaseBlock[]
-    /*
-    root: BaseBlock[]
-    container1: BaseBlock[]
-    container2: BaseBlock[]
-    //container3: BaseBlock[]
-    */
 }
 interface Props {
     blocks: ItemMatrix
 }
-/*
-    root: props.blocks,
-    container1: [],
-    container2: []
-    //container3: []
-*/
-
-
 
 export default function SortableMatrix(props: Props) {
 
@@ -49,12 +32,6 @@ export default function SortableMatrix(props: Props) {
     const sensors = useSensors(
         useSensor(PointerSensor)
     );
-
-    /*
-        <SortableContainer id="root" items={items.root} />
-        <SortableContainer id="container1" items={items.container1} />
-        <SortableContainer id="container2" items={items.container2} />
-     */
 
     return (
         <Box display={"flex"} flexDirection={"row"} width={"100%"}>
@@ -73,8 +50,6 @@ export default function SortableMatrix(props: Props) {
             </DndContext>
         </Box>
     );
-
-    // <SortableContainer id="container3" items={items.container3} />
 
     function findContainer(id: UniqueIdentifier) {
         if (id in items) {

@@ -1,12 +1,14 @@
 import {Box, Typography} from "@mui/material";
 import BaseBlock from "../BaseBlock";
 import ContentEditable from "react-contenteditable";
-import {KeyboardEventHandler, useEffect, useState} from "react";
+import {KeyboardEventHandler, useContext, useEffect, useState} from "react";
+import {BlocksContext} from "../../../pages/test";
 
 interface Props {
     text: string
     headerType: HeaderTextType,
-    setText: (text: string) => void
+    setText: (text: string) => void,
+    block?: BaseBlock
 }
 
 type HeaderTextType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -30,7 +32,7 @@ export default class HeaderTextBlock extends BaseBlock implements Props {
     }
 
     getComponent(): React.ReactNode {
-        return <Component {...this} />
+        return <Component {...this} block={this} />
     }
 
 }
@@ -38,6 +40,7 @@ export default class HeaderTextBlock extends BaseBlock implements Props {
 function Component(props: Props) {
 
     const [text, setText] = useState<string>(props.text);
+    const { addNewBlock } = useContext(BlocksContext);
 
     let keysDown: string[] = [];
 
