@@ -1,7 +1,7 @@
 import {Box, Typography} from "@mui/material";
 import BaseBlock from "../BaseBlock";
 import ContentEditable from "react-contenteditable";
-import {KeyboardEventHandler, useContext, useEffect, useState} from "react";
+import {KeyboardEventHandler, ReactNode, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {BlocksContext} from "../../../pages/test";
 
 interface Props {
@@ -40,12 +40,16 @@ export default class HeaderTextBlock extends BaseBlock implements Props {
 function Component(props: Props) {
 
     const [text, setText] = useState<string>(props.text);
-    const { addNewBlock } = useContext(BlocksContext);
+    const { addNewBlock, deleteBlock, focusedBlock } = useContext(BlocksContext);
 
-    let keysDown: string[] = [];
+    const contentEditableRef = useRef(null);
+
+    const isFocused = focusedBlock ? focusedBlock.id === props.block?.id : false;
+
 
     const handleChange = (evt: any) => {
         const newText = evt.target.value;
+        setText(newText);
         props.setText(newText);
     };
 
@@ -55,14 +59,27 @@ function Component(props: Props) {
         if(key === "Enter") {
             if(!evt.shiftKey) {
                 evt.preventDefault();
-                console.log("new component !!")
+                const newBlock = new HeaderTextBlock("", props.headerType);
+                addNewBlock(newBlock, props.block as BaseBlock);
+            }
+        }else if(key === "Backspace"){
+            const currentText = evt.currentTarget.innerHTML.replaceAll("<br>", "");
+            if(currentText === "") {
+                deleteBlock(props.block as BaseBlock);
             }
         }
     }
 
+    useEffect(() => {
+        if(isFocused){
+            const node: any = contentEditableRef.current;
+            node.focus();
+        }
+    }, [isFocused, contentEditableRef]);
+
     return <Box width={"100%"}>
-        <Typography variant={props.headerType} >
-            <ContentEditable html={text} onChange={handleChange} onKeyDown={handleKeyDown} />
+        <Typography variant={props.headerType}>
+            <ContentEditable html={text} onChange={handleChange} onKeyDown={handleKeyDown} innerRef={contentEditableRef} />
         </Typography>
     </Box>
 }

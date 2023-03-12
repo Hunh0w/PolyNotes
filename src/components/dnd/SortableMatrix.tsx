@@ -21,12 +21,14 @@ export interface ItemMatrix {
     [propKey: string]: BaseBlock[]
 }
 interface Props {
-    blocks: ItemMatrix
+    blockMatrix: BaseBlock[][]
+    setBlockMatrix: (arg: any) => void
 }
 
 export default function SortableMatrix(props: Props) {
 
-    const [items, setItems] = useState<ItemMatrix>(props.blocks);
+    const { blockMatrix, setBlockMatrix } = props;
+
     const [activeBlock, setActiveBlock] = useState<BaseBlock | null>();
 
     const sensors = useSensors(
@@ -42,8 +44,8 @@ export default function SortableMatrix(props: Props) {
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                {Object.keys(items).map(key => {
-                    return <SortableContainer id={key} key={key} items={items[key]} />
+                {blockMatrix.map((blockList, index) => {
+                    return <SortableContainer id={"container"+index} key={index} items={blockList} />
                 })}
 
                 <DragOverlay>{activeBlock ? <h4>{activeBlock.getType()}</h4> : null}</DragOverlay>
@@ -52,20 +54,26 @@ export default function SortableMatrix(props: Props) {
     );
 
     function findContainer(id: UniqueIdentifier) {
-        if (id in items) {
-            return id;
+        if(typeof(id) === "string"){
+            for(let i = 0; i < blockMatrix.length; i++){
+                if("container"+i === id) return i;
+            }
+            return;
         }
 
-        return Object.keys(items).find((key) => items[key].find(block => block.id === id));
+        return blockMatrix.map((blockList, index) => {
+            if(blockList.find(block => block.id === id))
+                return index;
+        }).find(index => index || index === 0);
     }
 
     function handleDragStart(event: DragStartEvent) {
         const { active } = event;
         const { id } = active;
         const activeContainer = findContainer(id);
-        if(!activeContainer) return;
+        if(!activeContainer && activeContainer !== 0) return;
 
-        const activeBlock = items[activeContainer].find(block => block.id === id);
+        const activeBlock = blockMatrix[activeContainer].find(block => block.id === id);
 
         setActiveBlock(activeBlock);
     }
@@ -81,18 +89,19 @@ export default function SortableMatrix(props: Props) {
         const overContainer = findContainer(overId);
 
         if (
-            !activeContainer ||
-            !overContainer ||
+            (!activeContainer && activeContainer !== 0) ||
+            (!overContainer && overContainer !== 0) ||
             activeContainer === overContainer
         ) {
             return;
         }
 
-        const activeBlock = items[activeContainer].find(block => block.id === id);
-        const overBlock = items[overContainer].find(block => block.id === overId);
+        const activeBlock = blockMatrix[activeContainer].find(block => block.id === id);
+        const overBlock = blockMatrix[overContainer].find(block => block.id === overId);
+
         if(!activeBlock) return;
 
-        setItems((prev) => {
+        setBlockMatrix((prev: BaseBlock[][]) => {
             const activeItems = prev[activeContainer];
             const overItems = prev[overContainer];
 
@@ -100,7 +109,7 @@ export default function SortableMatrix(props: Props) {
             const activeIndex = activeItems.indexOf(activeBlock);
             const overIndex = overBlock ? overItems.indexOf(overBlock) : 0;
 
-            let newIndex;
+            let newIndex: number;
             if (overId in prev) {
                 // We're at the root droppable of a container
                 newIndex = overItems.length + 1;
@@ -114,6 +123,19 @@ export default function SortableMatrix(props: Props) {
                 newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
             }
 
+            return prev.map((blockList, index) => {
+                if(index === activeContainer)
+                    return [...prev[activeContainer].filter((block: BaseBlock) => block.id !== active.id)]
+                else if(index === overContainer)
+                    return [
+                        ...prev[overContainer].slice(0, newIndex),
+                        blockMatrix[activeContainer][activeIndex],
+                        ...prev[overContainer].slice(newIndex, prev[overContainer].length)
+                    ]
+                else return blockList;
+            })
+
+            /*
             return {
                 ...prev,
                 [activeContainer]: [
@@ -121,10 +143,11 @@ export default function SortableMatrix(props: Props) {
                 ],
                 [overContainer]: [
                     ...prev[overContainer].slice(0, newIndex),
-                    items[activeContainer][activeIndex],
+                    blockMatrix[activeContainer][activeIndex],
                     ...prev[overContainer].slice(newIndex, prev[overContainer].length)
                 ]
             };
+             */
         });
     }
 
@@ -138,27 +161,26 @@ export default function SortableMatrix(props: Props) {
         const overContainer = findContainer(overId);
 
         if (
-            !activeContainer ||
-            !overContainer ||
+            (!activeContainer && activeContainer !== 0) ||
+            (!overContainer && overContainer !== 0) ||
             activeContainer !== overContainer
         ) {
             return;
         }
 
-
-
-        const activeBlock = items[activeContainer].find(block => block.id === active.id);
-        const overBlock = items[overContainer].find(block => block.id === over.id);
+        const activeBlock = blockMatrix[activeContainer].find(block => block.id === active.id);
+        const overBlock = blockMatrix[overContainer].find(block => block.id === over.id);
         if(!activeBlock || !overBlock)
             return;
 
-        const activeIndex = items[activeContainer].indexOf(activeBlock);
-        const overIndex = items[overContainer].indexOf(overBlock);
+        const activeIndex = blockMatrix[activeContainer].indexOf(activeBlock);
+        const overIndex = blockMatrix[overContainer].indexOf(overBlock);
 
         if (activeIndex !== overIndex) {
-            setItems((items) => ({
-                ...items,
-                [overContainer]: arrayMove(items[overContainer], activeIndex, overIndex)
+            setBlockMatrix((prev: BaseBlock[][]) => prev.map((blockList, index) => {
+                if(index === overContainer)
+                    return arrayMove(prev[overContainer], activeIndex, overIndex)
+                return blockList;
             }));
         }
 

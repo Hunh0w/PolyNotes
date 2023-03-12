@@ -5,7 +5,7 @@ let idRef = 1;
 
 export default abstract class BaseBlock {
 
-    id: UniqueIdentifier
+    id: UniqueIdentifier;
     type: BlockType;
 
     constructor(type: BlockType) {
