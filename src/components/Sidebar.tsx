@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {styled, useTheme, Theme, CSSObject, alpha} from '@mui/material/styles';
+import { styled, useTheme, Theme, CSSObject, alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -16,7 +16,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import {ButtonBase} from "@mui/material";
+import { ButtonBase } from "@mui/material";
 import NestedList from "./NestedList";
 import {
     Restore,
@@ -27,7 +27,7 @@ import {
     Star,
 } from "@mui/icons-material";
 import ProfileMenu from "./ProfileMenu";
-import {getProfileInfos} from "../utils/auth-manager";
+import { getProfileInfos } from "../utils/auth-manager";
 
 const drawerWidth = 240;
 
@@ -147,7 +147,7 @@ const StyledButton = styled(ButtonBase)(({ theme }) => ({
     borderRadius: "5px",
     fontSize: "17pt",
     color: "white",
-    backgroundColor: "#ff58ed",
+    backgroundColor: "#A460DD",
     border: "2px solid black"
 }));
 
@@ -168,17 +168,17 @@ export default function Sidebar(props: Props) {
     const [sharedOpen, setSharedOpen] = React.useState(true);
 
     const profileInfos = getProfileInfos();
-    if(!profileInfos) return <></>
+    if (!profileInfos) return <></>
     const firstletters = profileInfos.given_name.charAt(0).toUpperCase() + profileInfos.family_name.charAt(0).toUpperCase();
     const nickname = capitalize(profileInfos.family_name) + " " + capitalize(profileInfos.given_name);
 
     const toggleWorkspacesOpen = () => {
-        if(!open && !workspacesOpen) return;
+        if (!open && !workspacesOpen) return;
         setWorkspacesOpen(!workspacesOpen);
     };
 
     const toggleSharedOpen = () => {
-        if(!open && !sharedOpen) return;
+        if (!open && !sharedOpen) return;
         setSharedOpen(!sharedOpen);
     };
 
@@ -188,8 +188,8 @@ export default function Sidebar(props: Props) {
 
     const handleDrawerClose = () => {
         setOpen(false);
-        if(workspacesOpen) toggleWorkspacesOpen();
-        if(sharedOpen) toggleSharedOpen();
+        if (workspacesOpen) toggleWorkspacesOpen();
+        if (sharedOpen) toggleSharedOpen();
     };
 
     return (
@@ -212,10 +212,10 @@ export default function Sidebar(props: Props) {
                         <img src={"/img/polybunny.png"} width={60} alt={"polytech do bunny"} />
                     </Box>
                     <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <span style={{"color": "purple"}}>Poly</span><span style={{"color": "black"}}>Notes</span>
+                        <span style={{ "color": "purple" }}>Poly</span><span style={{ "color": "black" }}>Notes</span>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
-                    <Search sx={{ flexGrow: 1}}>
+                    <Search sx={{ flexGrow: 1 }}>
                         <SearchIconWrapper>
                             <SearchIcon color={"secondary"} />
                         </SearchIconWrapper>
@@ -240,7 +240,7 @@ export default function Sidebar(props: Props) {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                <Box sx={{"height": "70px", "display": "flex", "justifyContent": "center", "alignItems": "center"}}>
+                <Box sx={{ "height": "70px", "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
                     <StyledButton>
                         {open ? "+ Create" : "+"}
                     </StyledButton>
@@ -252,7 +252,7 @@ export default function Sidebar(props: Props) {
                                 <ListItemIcon>
                                     <Article />
                                 </ListItemIcon>
-                                <ListItemText primary={"document "+value} />
+                                <ListItemText primary={"document " + value} />
                             </ListItemButton>
                         ))}
                     </NestedList>
@@ -262,26 +262,26 @@ export default function Sidebar(props: Props) {
                                 <ListItemIcon>
                                     <Article />
                                 </ListItemIcon>
-                                <ListItemText primary={"document "+value} />
+                                <ListItemText primary={"document " + value} />
                             </ListItemButton>
                         ))}
                     </NestedList>
                 </List>
                 <Divider />
                 <List>
-                    <ListItemButton sx={{ pl: (open?4:2) }}>
+                    <ListItemButton sx={{ pl: (open ? 4 : 2) }}>
                         <ListItemIcon>
                             <Restore />
                         </ListItemIcon>
                         <ListItemText primary={"Recent"} />
                     </ListItemButton>
-                    <ListItemButton sx={{ pl: (open?4:2) }}>
+                    <ListItemButton sx={{ pl: (open ? 4 : 2) }}>
                         <ListItemIcon>
                             <Star />
                         </ListItemIcon>
                         <ListItemText primary={"Stared"} />
                     </ListItemButton>
-                    <ListItemButton sx={{ pl: (open?4:2) }}>
+                    <ListItemButton sx={{ pl: (open ? 4 : 2) }}>
                         <ListItemIcon>
                             <Delete />
                         </ListItemIcon>

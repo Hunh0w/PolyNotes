@@ -2,12 +2,9 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import React from "react";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import {ExpandLess, ExpandMore, StarBorder} from "@mui/icons-material";
+import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material";
 import ListItemText from "@mui/material/ListItemText";
-import {Collapse, ListSubheader} from "@mui/material";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import {styled} from "@mui/material/styles";
-import InputBase from "@mui/material/InputBase";
+import { Collapse, ListSubheader } from "@mui/material";
 
 
 interface Props {
@@ -17,7 +14,7 @@ interface Props {
     open: boolean
     toggleOpen: () => void
 }
-export default function NestedList(props: Props){
+export default function NestedList(props: Props) {
 
     return (<>
         <ListItemButton onClick={props.toggleOpen}>

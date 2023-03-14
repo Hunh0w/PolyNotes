@@ -1,8 +1,11 @@
-import {Box, Typography} from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import BaseBlock from "../BaseBlock";
-import ContentEditable from "react-contenteditable";
-import {KeyboardEventHandler, ReactNode, useCallback, useContext, useEffect, useRef, useState} from "react";
-import {BlocksContext} from "../../../pages/test";
+import { KeyboardEventHandler, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { BlocksContext } from "../../../pages/test";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Text from '@tiptap/extension-text'
+import Paragraph from "@tiptap/extension-paragraph";
 
 interface Props {
     text: string
@@ -39,47 +42,43 @@ export default class HeaderTextBlock extends BaseBlock implements Props {
 
 function Component(props: Props) {
 
-    const [text, setText] = useState<string>(props.text);
-    const { addNewBlock, deleteBlock, focusedBlock } = useContext(BlocksContext);
-
-    const contentEditableRef = useRef(null);
+    const { blocks, setBlocks, addNewBlock, deleteBlock, focusedBlock } = useContext(BlocksContext);
 
     const isFocused = focusedBlock ? focusedBlock.id === props.block?.id : false;
 
-
-    const handleChange = (evt: any) => {
-        const newText = evt.target.value;
-        setText(newText);
-        props.setText(newText);
-    };
-
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            Paragraph
+        ],
+        content: `<${props.headerType}>${props.text}</${props.headerType}>`,
+        autofocus: isFocused,
+        onUpdate: ({ editor }) => {
+            const newText = editor.getText();
+            props.setText(newText);
+        }
+    })
 
     const handleKeyDown = (evt: React.KeyboardEvent<any>) => {
         const key = evt.key;
-        if(key === "Enter") {
-            if(!evt.shiftKey) {
+        if (key === "Enter") {
+            if (!evt.shiftKey) {
                 evt.preventDefault();
                 const newBlock = new HeaderTextBlock("", props.headerType);
-                addNewBlock(newBlock, props.block as BaseBlock);
+                addNewBlock(newBlock, props.block as BaseBlock, blocks, setBlocks);
             }
-        }else if(key === "Backspace"){
-            const currentText = evt.currentTarget.innerHTML.replaceAll("<br>", "");
-            if(currentText === "") {
-                deleteBlock(props.block as BaseBlock);
+        } else if (key === "Backspace") {
+            const currentText = editor?.getText().replaceAll("<br>", "");
+            if (currentText === "") {
+                deleteBlock(props.block as BaseBlock, blocks, setBlocks);
             }
         }
     }
 
-    useEffect(() => {
-        if(isFocused){
-            const node: any = contentEditableRef.current;
-            node.focus();
-        }
-    }, [isFocused, contentEditableRef]);
-
-    return <Box width={"100%"}>
-        <Typography variant={props.headerType}>
-            <ContentEditable html={text} onChange={handleChange} onKeyDown={handleKeyDown} innerRef={contentEditableRef} />
-        </Typography>
+    return <Box width={"100%"} height={"100%"}>
+        <EditorContent editor={editor} onKeyDownCapture={handleKeyDown} style={{ "height": "100%" }} />
     </Box>
+
 }
+
+

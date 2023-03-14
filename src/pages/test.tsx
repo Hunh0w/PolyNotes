@@ -1,26 +1,34 @@
 import Sidebar from "../components/Sidebar";
-import React, {useEffect, useState} from "react";
-import SortableMatrix, {ItemMatrix} from "../components/dnd/SortableMatrix";
+import React, { useEffect, useState } from "react";
+import SortableMatrix, { ItemMatrix } from "../components/dnd/SortableMatrix";
 import HeaderTextBlock from "../components/blocks/impl/HeaderTextBlock";
 import BaseBlock from "../components/blocks/BaseBlock";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
+import DocumentSpeedDial from "../components/speed-dials/DocumentSpeedDial";
 
 
 interface BlocksContextPrototype {
-    addNewBlock: (block: BaseBlock, afterBlock: BaseBlock) => void
-    deleteBlock: (block: BaseBlock) => void
+    addNewBlock: (block: BaseBlock, afterBlock: BaseBlock, blocks: BaseBlock[][], setBlocks: (arg: any) => void) => void
+    deleteBlock: (block: BaseBlock, blocks: BaseBlock[][], setBlocks: (arg: any) => void) => void
     focusedBlock: BaseBlock | null
+    setFocusedBlock: (arg: any) => void
+    blocks: BaseBlock[][]
+    setBlocks: (arg: any) => void
 }
 
 const BlocksContextDefaultValue = {
     addNewBlock: (block: BaseBlock, afterBlock: BaseBlock) => null,
     deleteBlock: (block: BaseBlock) => null,
-    focusedBlock: null
+    focusedBlock: null,
+    setFocusedBlock: (arg: any) => null,
+    blocks: [],
+    setBlocks: (arg: any) => null
 }
 export const BlocksContext = React.createContext<BlocksContextPrototype>(BlocksContextDefaultValue);
 
 
-export default function TestPage(){
+export default function TestPage() {
 
     const navigate = useNavigate();
 
@@ -35,55 +43,55 @@ export default function TestPage(){
 
     useEffect(() => {
         const token = localStorage.getItem("access_token");
-        if(!token) navigate("/")
+        if (!token) navigate("/")
     }, [navigate]);
 
-    const getBlockColumn = (block: BaseBlock) => {
+    const getBlockColumn = (blocks: BaseBlock[][], block: BaseBlock) => {
         return blocks.map((blockList, index) => {
             const block2 = blockList.find(block2 => block2.id === block.id);
-            if(block2) return index;
+            if (block2) return index;
         }).find(index => index || index === 0)
     }
 
-    const getBlockIndex = (block: BaseBlock, columnIndex: number) => {
+    const getBlockIndex = (blocks: BaseBlock[][], block: BaseBlock, columnIndex: number) => {
         return blocks[columnIndex].map((block2, index) => {
-            if(block2.id === block.id)
+            if (block2.id === block.id)
                 return index;
         }).find(index => index || index === 0);
     }
 
-    const deleteBlock = (block: BaseBlock) => {
-        const columnIndex = getBlockColumn(block);
+    const deleteBlock = (block: BaseBlock, blocks: BaseBlock[][], setBlocks: (arg: any) => void) => {
+        const columnIndex = getBlockColumn(blocks, block);
         setBlocks((prev: BaseBlock[][]) => {
             return prev.map((blockList, index) => {
-                if(index !== columnIndex) return blockList;
+                if (index !== columnIndex) return blockList;
                 return blockList.filter((block2) => block2.id !== block.id);
             })
         })
     }
 
-    const addNewBlock = (block: BaseBlock, afterBlock: BaseBlock) => {
+    const addNewBlock = (block: BaseBlock, afterBlock: BaseBlock, blocks: BaseBlock[][], setBlocks: (arg: any) => void) => {
         setFocusedBlock(block);
-        const columnLastIndex = blocks.length-1;
-        const columnIndex = getBlockColumn(afterBlock);
-        if(!columnIndex && columnIndex !== 0) return;
+        const columnLastIndex = blocks.length - 1;
+        const columnIndex = getBlockColumn(blocks, afterBlock);
+        if (!columnIndex && columnIndex !== 0) return;
 
-        let afterIndex = getBlockIndex(afterBlock, columnIndex);
-        if(!afterIndex && afterIndex !== 0)
-            afterIndex = blocks[columnIndex].length-1;
+        let afterIndex = getBlockIndex(blocks, afterBlock, columnIndex);
+        if (!afterIndex && afterIndex !== 0)
+            afterIndex = blocks[columnIndex].length - 1;
         afterIndex++;
 
-        if(columnIndex > columnLastIndex) {
-            setBlocks((prevState) => {
-                return prevState.fill([], columnLastIndex+1, columnIndex)
+        if (columnIndex > columnLastIndex) {
+            setBlocks((prevState: BaseBlock[][]) => {
+                return prevState.fill([], columnLastIndex + 1, columnIndex)
                     .map((blockList, index) => {
-                        if(index !== columnIndex) return blockList;
+                        if (index !== columnIndex) return blockList;
                         return [block];
                     });
             });
             return;
         }
-        setBlocks((prevState) =>
+        setBlocks((prevState: BaseBlock[][]) =>
             prevState.map((blockList, index) => {
                 if (index !== columnIndex) return blockList;
                 return [
@@ -95,24 +103,44 @@ export default function TestPage(){
         )
     }
 
-    /*
-     ...prev[overContainer].slice(0, newIndex),
-    blockMatrix[activeContainer][activeIndex],
-    ...prev[overContainer].slice(newIndex, prev[overContainer].length)
-     */
 
     const blocksContextValue = {
         addNewBlock: addNewBlock,
         deleteBlock: deleteBlock,
-        focusedBlock: focusedBlock
+        focusedBlock: focusedBlock,
+        setFocusedBlock: setFocusedBlock,
+        blocks: blocks,
+        setBlocks: setBlocks
+
     }
 
     return (
         <Sidebar>
+            <Box mb={5}>
+                <Breadcrumbs aria-label="breadcrumb">
+                    <Typography fontWeight={"bold"}>
+                        <span style={{ color: "#7B10D4" }}>Poly</span>
+                        <span style={{ color: "#000" }}>Notes</span>
+                    </Typography>
+                    <Link underline="hover" color="inherit" href="#">
+                        Workspace 1
+                    </Link>
+                    <Link underline="hover" color="inherit" href="#">
+                        Folder 1
+                    </Link>
+                    <Link underline="hover" color="inherit" href="#">
+                        Folder 2
+                    </Link>
+                    <Typography color="text.primary" fontWeight={"bold"} fontStyle={{ "color": "#7B10D4" }}>Document1</Typography>
+                </Breadcrumbs>
+            </Box>
             <BlocksContext.Provider value={blocksContextValue}>
                 <SortableMatrix blockMatrix={blocks} setBlockMatrix={setBlocks} />
             </BlocksContext.Provider>
-        </Sidebar>
+            <DocumentSpeedDial />
+
+        </Sidebar >
+
     );
 
 }
