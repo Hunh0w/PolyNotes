@@ -1,5 +1,6 @@
 import {
     Box,
+    Button,
     Card,
     CardActionArea,
     CardContent, CardMedia,
@@ -98,13 +99,16 @@ export default function RecentFiles(props: {}) {
         }, 250);
     }
 
-    return <Box display={"flex"} justifyContent={"center"} alignItems={"center"} mt={5}>
-        <IconButton onClick={prevPage}>
-            <ArrowLeft fontSize={"large"} />
-        </IconButton>
-        <Grid container spacing={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+    return <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} mt={5} borderRadius={2} border="1px dashed black" style={{ height: "100%" }}>
+        <Box height={"100%"}>
+            <Button color="inherit" variant="text" onClick={prevPage} style={{ height: "100%" }}>
+                <ArrowLeft fontSize={"large"} />
+            </Button>
+        </Box>
+
+        <Grid container spacing={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }} py={5}>
             {getPageElements().map((value, index) => {
-                return <Slide in={animation.display} direction={animation.direction}>
+                return <Slide in={animation.display} direction={animation.direction} key={index}>
                     <Grid item key={index}>
                         <Card sx={{ width: "300px", height: "320px", "cursor": value ? "pointer" : "default" }} onClick={() => console.log("hello")}>
                             <CardActionArea>
@@ -128,8 +132,10 @@ export default function RecentFiles(props: {}) {
                 </Slide>
             })}
         </Grid>
-        <IconButton onClick={nextPage}>
-            <ArrowRight fontSize={"large"} />
-        </IconButton>
+        <Box height={"100%"}>
+            <Button color="inherit" variant="text" onClick={nextPage} style={{ height: "100%" }}>
+                <ArrowRight fontSize={"large"} />
+            </Button>
+        </Box>
     </Box>
 }
