@@ -1,11 +1,11 @@
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 import React, { useEffect, useState } from "react";
-import SortableMatrix, { ItemMatrix } from "../components/dnd/SortableMatrix";
-import HeaderTextBlock from "../components/blocks/impl/HeaderTextBlock";
-import BaseBlock from "../components/blocks/BaseBlock";
+import SortableMatrix, { ItemMatrix } from "../../components/dnd/SortableMatrix";
+import HeaderTextBlock from "../../components/blocks/impl/HeaderTextBlock";
+import BaseBlock from "../../components/blocks/BaseBlock";
 import { useNavigate } from "react-router-dom";
 import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
-import DocumentSpeedDial from "../components/speed-dials/DocumentSpeedDial";
+import DocumentSpeedDial from "../../components/speed-dials/DocumentSpeedDial";
 
 
 interface BlocksContextPrototype {
@@ -138,7 +138,6 @@ export default function TestPage() {
                 <SortableMatrix blockMatrix={blocks} setBlockMatrix={setBlocks} />
             </BlocksContext.Provider>
             <DocumentSpeedDial />
-
         </Sidebar >
 
     );

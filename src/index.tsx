@@ -8,7 +8,7 @@ import ErrorPage from "./pages/errors";
 import LoginPage from './pages/authentication/login';
 import RegisterPage from './pages/authentication/register';
 import HomePage from "./pages/main/home";
-import TestPage from "./pages/test";
+import TestPage from "./pages/main/document";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -20,18 +20,18 @@ const router = createBrowserRouter(
       path={"/"}
       errorElement={<ErrorPage />}
     >
-        <Route index={true} element={<WelcomePage />} />
-        <Route path={"login"} element={<LoginPage />} />
-        <Route path={"register"} element={<RegisterPage />} />
-        <Route path={"home"} element={<HomePage />} />
-        <Route path={"test"} element={<TestPage />} />
+      <Route index={true} element={<WelcomePage />} />
+      <Route path={"login"} element={<LoginPage />} />
+      <Route path={"register"} element={<RegisterPage />} />
+      <Route path={"home"} element={<HomePage />} />
+      <Route path={"test"} element={<TestPage />} />
     </Route>
   )
 )
 
 root.render(
   //<React.StrictMode>
-    <RouterProvider router={router} />
+  <RouterProvider router={router} />
   //</React.StrictMode>
 );
 

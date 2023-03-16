@@ -1,7 +1,7 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import BaseBlock from "../BaseBlock";
 import { KeyboardEventHandler, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { BlocksContext } from "../../../pages/test";
+import { BlocksContext } from "../../../pages/main/document";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Text from '@tiptap/extension-text'
@@ -25,7 +25,7 @@ export default class HeaderTextBlock extends BaseBlock implements Props {
     }
 
     constructor(text: string, headerType: HeaderTextType) {
-        super("headerText");
+        super();
         this.text = text;
         this.headerType = headerType;
     }
