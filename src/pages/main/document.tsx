@@ -33,10 +33,10 @@ export default function TestPage() {
     const navigate = useNavigate();
 
     const [blocks, setBlocks] = useState<BaseBlock[][]>([
-        [new HeaderTextBlock("Teste1", "h1"), new HeaderTextBlock("Test1", "h2")],
-        [new HeaderTextBlock("Test2", "h4")],
-        [new HeaderTextBlock("Test2", "h6")],
-        [new HeaderTextBlock("Test3", "h1")]
+        [new HeaderTextBlock("Teste1", "h1", true), new HeaderTextBlock("Test1", "h2", true)],
+        [new HeaderTextBlock("Test2", "h4", true)],
+        [new HeaderTextBlock("Test2", "h6", true)],
+        [new HeaderTextBlock("Test3", "h1", true)]
     ]);
 
     const [focusedBlock, setFocusedBlock] = useState<BaseBlock | null>(null);

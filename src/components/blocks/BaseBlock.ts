@@ -1,18 +1,23 @@
 import { ReactNode } from "react";
 import { UniqueIdentifier } from "@dnd-kit/core";
 
-let idRef = 1;
+let idRef: number = 1;
 
 export default abstract class BaseBlock {
 
-    id: UniqueIdentifier;
+    id!: UniqueIdentifier;
 
-    constructor() {
+
+    abstract getComponent(): ReactNode;
+    abstract getType(): string;
+
+    public generateId() {
         this.id = idRef;
         idRef++;
     }
 
-    abstract getComponent(): ReactNode;
-    abstract getType(): string;
+    public setId(id: UniqueIdentifier) {
+        this.id = id;
+    }
 
 }

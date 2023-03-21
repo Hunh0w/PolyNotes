@@ -6,6 +6,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Text from '@tiptap/extension-text'
 import Paragraph from "@tiptap/extension-paragraph";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 interface Props {
     text: string
@@ -24,10 +25,12 @@ export default class HeaderTextBlock extends BaseBlock implements Props {
         this.text = text;
     }
 
-    constructor(text: string, headerType: HeaderTextType) {
+    constructor(text: string, headerType: HeaderTextType, generateId: boolean) {
         super();
         this.text = text;
         this.headerType = headerType;
+        if (generateId)
+            this.generateId();
     }
 
     getType(): string {
@@ -64,7 +67,7 @@ function Component(props: Props) {
         if (key === "Enter") {
             if (!evt.shiftKey) {
                 evt.preventDefault();
-                const newBlock = new HeaderTextBlock("", props.headerType);
+                const newBlock = new HeaderTextBlock("", props.headerType, true);
                 addNewBlock(newBlock, props.block as BaseBlock, blocks, setBlocks);
             }
         } else if (key === "Backspace") {

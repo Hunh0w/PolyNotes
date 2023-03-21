@@ -99,14 +99,14 @@ export default function RecentFiles(props: {}) {
         }, 250);
     }
 
-    return <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} mt={5} borderRadius={2} border="1px dashed black" style={{ height: "100%" }}>
+    return <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} borderRadius={2} mt={5}>
         <Box height={"100%"}>
             <Button color="inherit" variant="text" onClick={prevPage} style={{ height: "100%" }}>
                 <ArrowLeft fontSize={"large"} />
             </Button>
         </Box>
 
-        <Grid container spacing={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }} py={5}>
+        <Grid container spacing={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             {getPageElements().map((value, index) => {
                 return <Slide in={animation.display} direction={animation.direction} key={index}>
                     <Grid item key={index}>

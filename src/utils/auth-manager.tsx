@@ -1,10 +1,10 @@
-import {url} from "./conf";
+import { url } from "./conf";
 
 
 export function isConnected(): Promise<Boolean> {
     const token = localStorage.getItem("access_token")
 
-    if(!token) return new Promise(() => false);
+    if (!token) return new Promise(() => false);
     return fetch(url + "/verify", {
         method: "GET",
         headers: {
@@ -15,7 +15,7 @@ export function isConnected(): Promise<Boolean> {
 
 export function getProfileInfos() {
     const token = localStorage.getItem("access_token");
-    if(!token) return undefined;
+    if (!token) return null;
 
     return JSON.parse(b64_to_utf8(token.split(".")[1]));
 }
