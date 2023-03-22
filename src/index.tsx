@@ -8,7 +8,10 @@ import ErrorPage from "./pages/errors";
 import LoginPage from './pages/authentication/login';
 import RegisterPage from './pages/authentication/register';
 import HomePage from "./pages/main/home";
-import TestPage from "./pages/main/document";
+import DocumentPage from './components/files/PolyFileEditor';
+import PolyPage from './pages/main/pages';
+import { Alert, Box } from '@mui/material';
+import AlertManager from './components/AlertManager';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -24,15 +27,15 @@ const router = createBrowserRouter(
       <Route path={"login"} element={<LoginPage />} />
       <Route path={"register"} element={<RegisterPage />} />
       <Route path={"home"} element={<HomePage />} />
-      <Route path={"test"} element={<TestPage />} />
+      <Route path={"page/:pageId"} element={<PolyPage />} />
     </Route>
   )
 )
 
 root.render(
-  //<React.StrictMode>
-  <RouterProvider router={router} />
-  //</React.StrictMode>
+  <AlertManager>
+    <RouterProvider router={router} />
+  </AlertManager>
 );
 
 // If you want to start measuring performance in your app, pass a function
