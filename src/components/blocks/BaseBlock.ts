@@ -1,8 +1,6 @@
 import { ReactNode } from "react";
 import { UniqueIdentifier } from "@dnd-kit/core";
 
-let idRef: number = 1;
-
 export default abstract class BaseBlock {
 
     id!: UniqueIdentifier;
@@ -10,10 +8,14 @@ export default abstract class BaseBlock {
 
     abstract getComponent(): ReactNode;
     abstract getType(): string;
+    abstract getOverlayLabel(): string;
+    abstract getValues(): any;
 
     public generateId() {
-        this.id = idRef;
-        idRef++;
+
+        const min = 0;
+        const max = 2147483647;
+        this.id = Math.floor(min + Math.random() * (max - min));
     }
 
     public setId(id: UniqueIdentifier) {

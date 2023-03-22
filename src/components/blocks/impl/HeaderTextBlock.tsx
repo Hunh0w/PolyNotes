@@ -1,7 +1,7 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import BaseBlock from "../BaseBlock";
 import { KeyboardEventHandler, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { BlocksContext } from "../../../pages/main/document";
+import { BlocksContext } from "../../files/PolyFileEditor";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Text from '@tiptap/extension-text'
@@ -15,7 +15,7 @@ interface Props {
     block?: BaseBlock
 }
 
-type HeaderTextType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type HeaderTextType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 export default class HeaderTextBlock extends BaseBlock implements Props {
 
@@ -34,11 +34,22 @@ export default class HeaderTextBlock extends BaseBlock implements Props {
     }
 
     getType(): string {
-        return this.headerType;
+        return "HeaderText";
     }
 
     getComponent(): React.ReactNode {
         return <Component {...this} block={this} />
+    }
+
+    getOverlayLabel(): string {
+        return this.headerType;
+    }
+
+    getValues(): any {
+        return {
+            text: this.text,
+            type: this.headerType
+        }
     }
 
 }

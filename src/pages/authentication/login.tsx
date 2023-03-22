@@ -1,8 +1,8 @@
 import { Box, Button, Container, Divider, TextField, Typography } from "@mui/material";
-import PasswordArea, {InputError} from "../../components/inputs/PasswordInput";
-import {useRef, useState} from "react";
-import {url} from "../../utils/conf";
-import {useNavigate} from "react-router-dom";
+import PasswordArea, { InputError } from "../../components/inputs/PasswordInput";
+import { useRef, useState } from "react";
+import { url } from "../../utils/conf";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
 
@@ -22,13 +22,13 @@ export default function LoginPage() {
 
         let pass = true;
 
-        if(email.value === ""){
+        if (email.value === "") {
             setEmailError("cannot be empty")
             pass = false;
         }
 
-        if(password.value === ""){
-            setPasswordError({message: "cannot be empty"})
+        if (password.value === "") {
+            setPasswordError({ message: "cannot be empty" })
             pass = false;
         }
 
@@ -37,7 +37,7 @@ export default function LoginPage() {
 
     const login = () => {
 
-        if(!verify()) return;
+        if (!verify()) return;
 
         const email: any = email_ref.current;
         const password: any = password_ref.current;
@@ -47,20 +47,20 @@ export default function LoginPage() {
             password: password.value
         }
 
-        fetch(url+"/login", {
+        fetch(url + "/login", {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(login_payload)
         }).then(resp => {
-            if(resp.status === 401){
+            if (resp.status === 401) {
                 setApiError("Invalid email or password")
                 return;
             }
-            if(resp.status === 200){
+            if (resp.status === 200) {
                 let token = resp.headers.get("Authorization");
-                if(token == null) {
+                if (token == null) {
                     console.log("token null!");
                     return;
                 }
@@ -69,12 +69,14 @@ export default function LoginPage() {
                 localStorage.setItem("access_token", token);
                 navigate("/home")
             }
+        }).catch((error) => {
+            console.log(error);
         })
     }
 
     const resetError = (inputError: any,
-                        inputErrorSetter: (inputError: any) => void) => {
-        if(inputError){
+        inputErrorSetter: (inputError: any) => void) => {
+        if (inputError) {
             inputErrorSetter(undefined);
         }
     }

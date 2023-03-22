@@ -1,11 +1,10 @@
-import Sidebar from "../../components/Sidebar";
 import React, { useEffect, useState } from "react";
-import SortableMatrix, { ItemMatrix } from "../../components/dnd/SortableMatrix";
-import HeaderTextBlock from "../../components/blocks/impl/HeaderTextBlock";
-import BaseBlock from "../../components/blocks/BaseBlock";
+import SortableMatrix from "../dnd/SortableMatrix";
+import HeaderTextBlock from "../blocks/impl/HeaderTextBlock";
+import BaseBlock from "../blocks/BaseBlock";
 import { useNavigate } from "react-router-dom";
 import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
-import DocumentSpeedDial from "../../components/speed-dials/DocumentSpeedDial";
+import EditorSpeedDial from "../speed-dials/EditorSpeedDial";
 
 
 interface BlocksContextPrototype {
@@ -28,16 +27,11 @@ const BlocksContextDefaultValue = {
 export const BlocksContext = React.createContext<BlocksContextPrototype>(BlocksContextDefaultValue);
 
 
-export default function TestPage() {
+export default function PolyFileEditor(props: { blocks: BaseBlock[][], pageId: string }) {
 
     const navigate = useNavigate();
 
-    const [blocks, setBlocks] = useState<BaseBlock[][]>([
-        [new HeaderTextBlock("Teste1", "h1", true), new HeaderTextBlock("Test1", "h2", true)],
-        [new HeaderTextBlock("Test2", "h4", true)],
-        [new HeaderTextBlock("Test2", "h6", true)],
-        [new HeaderTextBlock("Test3", "h1", true)]
-    ]);
+    const [blocks, setBlocks] = useState<BaseBlock[][]>(props.blocks);
 
     const [focusedBlock, setFocusedBlock] = useState<BaseBlock | null>(null);
 
@@ -115,7 +109,7 @@ export default function TestPage() {
     }
 
     return (
-        <Sidebar>
+        <>
             <Box mb={5}>
                 <Breadcrumbs aria-label="breadcrumb">
                     <Typography fontWeight={"bold"}>
@@ -136,9 +130,9 @@ export default function TestPage() {
             </Box>
             <BlocksContext.Provider value={blocksContextValue}>
                 <SortableMatrix blockMatrix={blocks} setBlockMatrix={setBlocks} />
+                <EditorSpeedDial pageId={props.pageId} />
             </BlocksContext.Provider>
-            <DocumentSpeedDial />
-        </Sidebar >
+        </>
 
     );
 
