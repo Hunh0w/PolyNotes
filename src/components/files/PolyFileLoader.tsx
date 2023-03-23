@@ -31,8 +31,8 @@ export default function PolyFileLoader(props: { id: string }) {
                 const jsonFile = await response.json();
 
                 const polyFile: PolyFileBase = jsonFile.isDirectory ?
-                    new PolyFolder(jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, jsonFile.listFiles) :
-                    new PolyFile(jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, generateMatrixBlocks(jsonFile.blocks))
+                    new PolyFolder(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, jsonFile.listFiles) :
+                    new PolyFile(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, generateMatrixBlocks(jsonFile.blocks))
 
 
                 setResponse({ isLoaded: true, file: polyFile });
@@ -78,5 +78,5 @@ export default function PolyFileLoader(props: { id: string }) {
     }
 
     const file = response.file as PolyFile;
-    return <PolyFileEditor blocks={file.blocks} pageId={props.id} />
+    return <PolyFileEditor file={file} pageId={props.id} />
 }

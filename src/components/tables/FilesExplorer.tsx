@@ -7,9 +7,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, Divider, Icon, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Typography } from '@mui/material';
+import { Box, CircularProgress, Divider, Icon, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Typography } from '@mui/material';
 import { Cloud, ContentCopy, ContentCut, ContentPaste, Delete, Description, Folder, MoreVert, Share, Visibility } from '@mui/icons-material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { PolyFileBase } from '../files/PolyFileBase';
+import { useNavigate } from 'react-router-dom';
+import { url } from '../../utils/conf';
+import { PolyFolder } from '../files/impl/PolyFolder';
+import { PolyFile } from '../files/impl/PolyFile';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -33,51 +38,79 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-interface PolyNoteFile {
-    id: string
-    name: string
-    owner: string
-    isDirectory: boolean
-    lastModifiedDate: Date
+export default function FilesExplorer() {
+
+    return <FilesExplorerService />
 }
 
-const rows: PolyNoteFile[] = [
-    {
-        id: "82374",
-        name: "test1.polynote",
-        isDirectory: false,
-        lastModifiedDate: new Date(),
-        owner: "Vincent Font"
-    },
-    {
-        id: "82fe3",
-        name: "test2.polynote",
-        isDirectory: false,
-        lastModifiedDate: new Date(),
-        owner: "Vincent Font"
-    },
-    {
-        id: "8D3Y3D",
-        name: "Tests",
-        isDirectory: true,
-        lastModifiedDate: new Date(),
-        owner: "Vincent Font"
-    },
-    {
-        id: "8D3M38",
-        name: "test4.polynote",
-        isDirectory: false,
-        lastModifiedDate: new Date(),
-        owner: "Vincent Font"
-    }
-];
+interface APIResponse {
+    error?: string
+    isLoaded: boolean
+    files?: PolyFileBase[]
+}
 
-export default function FilesExplorer() {
+function FilesExplorerService() {
+
+    const [response, setResponse] = useState<APIResponse>({ isLoaded: false });
+    const navigate = useNavigate();
+    const token = localStorage.getItem("access_token");
+
+    const fetchFile = () => {
+        fetch(url + "/files", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        }).then(async (response) => {
+            if (response.status === 200) {
+                const jsonFiles = await response.json();
+                let files: PolyFileBase[] = [];
+                for (let i = 0; i < jsonFiles.files.length; i++) {
+                    const jsonFile = jsonFiles.files[i];
+                    const polyfile: PolyFileBase = jsonFile.isDirectory ?
+                        new PolyFolder(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, []) :
+                        new PolyFile(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, []);
+                    files.push(polyfile);
+                }
+
+                setResponse({ isLoaded: true, files: files });
+            } else {
+                setResponse({ isLoaded: false, error: await response.text() })
+            }
+        })
+    }
+
+    useEffect(() => {
+        setTimeout(fetchFile, 1000)
+    }, []);
+
+    if (!token) {
+        navigate("/login");
+        return <></>
+    }
+
+    if (response.error) {
+        <Box width={"100%"} height={"100%"} display={"flex"} justifyContent="center" alignItems="center">
+            <Typography>Erreur: {response.error}</Typography>
+        </Box>
+    }
+
+    if (!response.isLoaded)
+        return <Box width={"100%"} height={"100%"} display={"flex"} justifyContent="center" alignItems="center" mt={5}>
+            <CircularProgress color="secondary" size={80} />
+            <Typography ml={5} variant="h2">Loading...</Typography>
+        </Box>
+
+    const polyFiles = response.files as PolyFileBase[]
+    return <FilesExplorerUI files={polyFiles} />
+}
+
+function FilesExplorerUI(props: { files: PolyFileBase[] }) {
 
     const [hover, setHover] = useState<string>("")
 
-    const onClick = (row: PolyNoteFile) => {
-        console.log(row) //TODO
+    const onClick = (file: PolyFileBase) => {
+        console.log(file) //TODO
     }
 
     const onMouseEnter = (id: string) => {
@@ -100,22 +133,22 @@ export default function FilesExplorer() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
-                        <StyledTableRow key={row.name}>
+                    {props.files.map((file) => (
+                        <StyledTableRow key={file.name}>
                             <StyledTableCell component="th" scope="row">
                                 <Box display="flex" justifyContent="start" height={"auto"} width="auto">
                                     <Box mr={3}>
-                                        <IconButton onClick={() => onClick(row)} onMouseEnter={() => onMouseEnter(row.id)} onMouseLeave={() => onMouseLeave()}>
-                                            {row.isDirectory ? <Folder /> : <Description />}
+                                        <IconButton onClick={() => onClick(file)} onMouseEnter={() => onMouseEnter(file.id)} onMouseLeave={() => onMouseLeave()}>
+                                            {file.isDirectory ? <Folder /> : <Description />}
                                         </IconButton>
                                     </Box>
 
-                                    <Typography color={row.id === hover ? "#922FDF" : "#000"} variant='h5' fontWeight={row.isDirectory ? "bold" : "none"}>{row.name}</Typography>
+                                    <Typography color={file.id === hover ? "#922FDF" : "#000"} variant='h5' fontWeight={file.isDirectory ? "bold" : "none"}>{file.name}</Typography>
                                 </Box>
 
                             </StyledTableCell>
-                            <StyledTableCell align="right" style={{ color: row.id === hover ? "#922FDF" : "#000" }}>{row.owner}</StyledTableCell>
-                            <StyledTableCell align="right" style={{ color: row.id === hover ? "#922FDF" : "#000" }}>{row.lastModifiedDate.toString()}</StyledTableCell>
+                            <StyledTableCell align="right" style={{ color: file.id === hover ? "#922FDF" : "#000" }}>{file.ownerId}</StyledTableCell>
+                            <StyledTableCell align="right" style={{ color: file.id === hover ? "#922FDF" : "#000" }}>{file.lastModified}</StyledTableCell>
                             <StyledTableCell align="right">
                                 <ActionsMenu />
                             </StyledTableCell>

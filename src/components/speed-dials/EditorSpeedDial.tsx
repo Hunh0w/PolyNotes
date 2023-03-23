@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { url } from '../../utils/conf';
 import { AlertContext } from '../AlertManager';
 
-export default function EditorSpeedDial(props: { pageId: string }) {
+export default function EditorSpeedDial(props: { pageId: string, fileName: string }) {
 
     const { blocks } = useContext(BlocksContext);
     const navigate = useNavigate();
@@ -29,6 +29,7 @@ export default function EditorSpeedDial(props: { pageId: string }) {
         const jsonBlocks = toJson(blocks);
         const jsonPolyFile = {
             id: props.pageId,
+            name: props.fileName,
             blocks: jsonBlocks
         }
 
