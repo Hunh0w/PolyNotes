@@ -38,9 +38,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-export default function FilesExplorer() {
+export default function FilesExplorer(props: { files: PolyFileBase[] }) {
 
-    return <FilesExplorerService />
+    return <FilesExplorerUI files={props.files} />
 }
 
 interface APIResponse {
@@ -74,6 +74,8 @@ function FilesExplorerService() {
                 }
 
                 setResponse({ isLoaded: true, files: files });
+            } else if (response.status === 401) {
+                navigate("/login");
             } else {
                 setResponse({ isLoaded: false, error: await response.text() })
             }
@@ -81,7 +83,7 @@ function FilesExplorerService() {
     }
 
     useEffect(() => {
-        setTimeout(fetchFile, 1000)
+        fetchFile()
     }, []);
 
     if (!token) {
@@ -98,7 +100,6 @@ function FilesExplorerService() {
     if (!response.isLoaded)
         return <Box width={"100%"} height={"100%"} display={"flex"} justifyContent="center" alignItems="center" mt={5}>
             <CircularProgress color="secondary" size={80} />
-            <Typography ml={5} variant="h2">Loading...</Typography>
         </Box>
 
     const polyFiles = response.files as PolyFileBase[]

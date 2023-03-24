@@ -1,6 +1,7 @@
 import { Box, Button, Container, Grid } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/loader/Loader";
 
 interface StartingItemProps {
     setStarted: (started: boolean) => void
@@ -50,6 +51,6 @@ export default function WelcomePage() {
                     {started ? <StartedItem /> : <StartingItem setStarted={setStarted} />}
                 </Box>
             </Grid>
-        </Grid >
+        </Grid>
     </Container>)
 }

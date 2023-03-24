@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { url } from "../../utils/conf";
 import { generateMatrixBlocks } from "../blocks/BlockFactory";
+import Loader from "../loader/Loader";
 import { PolyFile } from "./impl/PolyFile";
 import { PolyFolder } from "./impl/PolyFolder";
 import { PolyFileBase } from "./PolyFileBase";
@@ -21,7 +22,7 @@ export default function PolyFileLoader(props: { id: string }) {
     const token = localStorage.getItem("access_token");
 
     const fetchFile = () => {
-        fetch(url + "/file/" + props.id, {
+        return fetch(url + "/file/" + props.id, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + token
@@ -49,11 +50,6 @@ export default function PolyFileLoader(props: { id: string }) {
     if (!props.id) return <></>
 
 
-    if (!token) {
-        navigate("/login");
-        return <></>
-    }
-
     if (response.error) {
         <Box width={"100%"} height={"100%"} display={"flex"} justifyContent="center" alignItems="center">
             <Typography>Erreur: {response.error}</Typography>
@@ -62,8 +58,7 @@ export default function PolyFileLoader(props: { id: string }) {
 
     if (!response.isLoaded)
         return <Box width={"100%"} height={"100%"} display={"flex"} justifyContent="center" alignItems="center" mt={5}>
-            <CircularProgress color="secondary" size={80} />
-            <Typography ml={5} variant="h2">Loading...</Typography>
+            <Loader />
         </Box>
 
     console.log(response.file)
