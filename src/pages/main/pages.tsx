@@ -7,8 +7,6 @@ import { PolyFile } from "../../components/files/impl/PolyFile";
 import { PolyFolder } from "../../components/files/impl/PolyFolder";
 import { PolyFileBase } from "../../components/files/PolyFileBase";
 import PolyFileEditor from "../../components/files/PolyFileEditor";
-import PolyFileLoader from "../../components/files/PolyFileLoader";
-import Loader from "../../components/loader/Loader";
 import Sidebar from "../../components/Sidebar";
 import { url } from "../../utils/conf";
 
@@ -20,12 +18,7 @@ export default function PolyPage(props: {}) {
     const navigate = useNavigate();
     const token = localStorage.getItem("access_token");
     const [file, setFile] = useState<PolyFileBase | null>(null);
-
-    useEffect(() => {
-        if (!pageId) {
-            navigate("/home");
-        }
-    }, [])
+    const [loading, setLoading] = useState(true);
 
     const fetchFile = () => {
         return fetch(url + "/file/" + pageId, {
@@ -42,18 +35,27 @@ export default function PolyPage(props: {}) {
                     new PolyFile(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, generateMatrixBlocks(jsonFile.blocks))
 
                 setFile(polyFile);
+                setLoading(false);
             } else {
                 navigate("/home");
             }
         })
     }
 
+    useEffect(() => {
+        if (!pageId) {
+            navigate("/home");
+            return;
+        }
+        fetchFile();
+    }, [])
+
     if (!file || !pageId) {
         navigate("/home");
         return <></>;
     }
 
-    return <AuthChecker promise={fetchFile()}>
+    return <AuthChecker loading={loading}>
         <Sidebar>
             <PolyFileBaseDisplay polyfile={file} pageId={pageId} />
         </Sidebar>

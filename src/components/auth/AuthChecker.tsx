@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { url } from "../../utils/conf";
 import Loader from "../loader/Loader";
 
-export default function AuthChecker(props: { children: any, promise?: Promise<any> }) {
+export default function AuthChecker(props: { children: any, loading: boolean }) {
 
     const [checked, setChecked] = useState<boolean>(false);
     const navigate = useNavigate();
@@ -19,20 +19,18 @@ export default function AuthChecker(props: { children: any, promise?: Promise<an
             }
         }).then(async (response) => {
             if (response.status === 200) {
-                if (props.promise)
-                    await props.promise
-                setChecked(true);
+                setChecked(true)
             } else {
                 navigate("/login")
             }
-        })
+        });
     }
 
     useEffect(() => {
         setTimeout(check, 2000)
     }, []);
 
-    if (!checked) return <Loader />
+    if (!checked || props.loading) return <Loader />
 
     return props.children
 }

@@ -55,37 +55,6 @@ function FilesExplorerService() {
     const navigate = useNavigate();
     const token = localStorage.getItem("access_token");
 
-    const fetchFile = () => {
-        fetch(url + "/files", {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }).then(async (response) => {
-            if (response.status === 200) {
-                const jsonFiles = await response.json();
-                let files: PolyFileBase[] = [];
-                for (let i = 0; i < jsonFiles.files.length; i++) {
-                    const jsonFile = jsonFiles.files[i];
-                    const polyfile: PolyFileBase = jsonFile.isDirectory ?
-                        new PolyFolder(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, []) :
-                        new PolyFile(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, []);
-                    files.push(polyfile);
-                }
-
-                setResponse({ isLoaded: true, files: files });
-            } else if (response.status === 401) {
-                navigate("/login");
-            } else {
-                setResponse({ isLoaded: false, error: await response.text() })
-            }
-        })
-    }
-
-    useEffect(() => {
-        fetchFile()
-    }, []);
-
     if (!token) {
         navigate("/login");
         return <></>

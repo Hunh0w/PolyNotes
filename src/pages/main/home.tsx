@@ -15,6 +15,7 @@ import { PolyFile } from "../../components/files/impl/PolyFile";
 export default function HomePage() {
 
     const [files, setFiles] = useState<PolyFileBase[]>([]);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     const fetchFile = () => {
@@ -36,6 +37,7 @@ export default function HomePage() {
                 }
 
                 setFiles(files);
+                setLoading(false);
             } else if (response.status === 401) {
                 navigate("/login");
             } else {
@@ -44,7 +46,11 @@ export default function HomePage() {
         })
     }
 
-    return <AuthChecker promise={fetchFile()}>
+    useEffect(() => {
+        fetchFile();
+    }, []);
+
+    return <AuthChecker loading={loading}>
         <Sidebar>
             <Typography variant={"h4"}>
                 Recent
@@ -52,12 +58,9 @@ export default function HomePage() {
 
             <RecentFiles />
 
-
-
             <Box mt={10}>
                 <FilesExplorer files={files} />
             </Box>
-
 
         </Sidebar >
     </AuthChecker>

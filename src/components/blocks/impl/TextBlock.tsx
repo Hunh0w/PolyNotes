@@ -15,9 +15,9 @@ interface Props {
     block?: BaseBlock
 }
 
-export type HeaderTextType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type HeaderTextType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p";
 
-export default class HeaderTextBlock extends BaseBlock implements Props {
+export default class TextBlock extends BaseBlock implements Props {
 
     text: string;
     headerType: HeaderTextType
@@ -34,7 +34,7 @@ export default class HeaderTextBlock extends BaseBlock implements Props {
     }
 
     getType(): string {
-        return "HeaderText";
+        return "Text";
     }
 
     getComponent(): React.ReactNode {
@@ -78,7 +78,7 @@ function Component(props: Props) {
         if (key === "Enter") {
             if (!evt.shiftKey) {
                 evt.preventDefault();
-                const newBlock = new HeaderTextBlock("", props.headerType, true);
+                const newBlock = new TextBlock("", props.headerType, true);
                 addNewBlock(newBlock, props.block as BaseBlock, blocks, setBlocks);
             }
         } else if (key === "Backspace") {
@@ -89,8 +89,10 @@ function Component(props: Props) {
         }
     }
 
+
+
     return <Box width={"100%"} height={"100%"}>
-        <EditorContent editor={editor} onKeyDownCapture={handleKeyDown} style={{ "height": "100%" }} />
+        <EditorContent editor={editor} placeholder={"Press / to show the component list"} onKeyDownCapture={handleKeyDown} style={{ "height": "100%" }} />
     </Box>
 
 }

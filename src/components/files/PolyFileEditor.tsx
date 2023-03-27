@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SortableMatrix from "../dnd/SortableMatrix";
-import HeaderTextBlock from "../blocks/impl/HeaderTextBlock";
+import TextBlock from "../blocks/impl/TextBlock";
 import BaseBlock from "../blocks/BaseBlock";
 import { useNavigate } from "react-router-dom";
 import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
@@ -31,8 +31,9 @@ export const BlocksContext = React.createContext<BlocksContextPrototype>(BlocksC
 
 
 export default function PolyFileEditor(props: { file: PolyFile, pageId: string }) {
-
     const navigate = useNavigate();
+
+    console.log(props.file.blocks)
 
     const [blocks, setBlocks] = useState<BaseBlock[][]>(props.file.blocks);
     const [fileName, setFileName] = useState<string>(props.file.name);

@@ -16,7 +16,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import { ButtonBase } from "@mui/material";
+import {ButtonBase, Modal} from "@mui/material";
 import NestedList from "./NestedList";
 import {
     Restore,
@@ -28,6 +28,7 @@ import {
 } from "@mui/icons-material";
 import ProfileMenu from "./ProfileMenu";
 import { getProfileInfos } from "../utils/auth-manager";
+import CreatePageModal from "./modals/CreatePageModal";
 
 const drawerWidth = 240;
 
@@ -141,15 +142,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-const StyledButton = styled(ButtonBase)(({ theme }) => ({
-    width: '80%',
-    height: '70%',
-    borderRadius: "5px",
-    fontSize: "17pt",
-    color: "white",
-    backgroundColor: "#A460DD",
-    border: "2px solid black"
-}));
+
 
 function capitalize(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -163,6 +156,7 @@ export default function Sidebar(props: Props) {
     const theme = useTheme();
 
     const [open, setOpen] = React.useState(true);
+
 
     const [workspacesOpen, setWorkspacesOpen] = React.useState(true);
     const [sharedOpen, setSharedOpen] = React.useState(true);
@@ -191,6 +185,10 @@ export default function Sidebar(props: Props) {
         if (workspacesOpen) toggleWorkspacesOpen();
         if (sharedOpen) toggleSharedOpen();
     };
+
+    const onCreateModal = () => {
+
+    }
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -241,9 +239,7 @@ export default function Sidebar(props: Props) {
                 </DrawerHeader>
                 <Divider />
                 <Box sx={{ "height": "70px", "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
-                    <StyledButton>
-                        {open ? "+ Create" : "+"}
-                    </StyledButton>
+                    <CreatePageModal sidebarOpen={open} />
                 </Box>
                 <List>
                     <NestedList icon={<Folder />} text={"Workspaces"} open={workspacesOpen} toggleOpen={toggleWorkspacesOpen}>

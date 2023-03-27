@@ -1,6 +1,6 @@
 import { json } from "stream/consumers";
 import BaseBlock from "./BaseBlock";
-import HeaderTextBlock from "./impl/HeaderTextBlock";
+import TextBlock from "./impl/TextBlock";
 
 interface APIBlock {
     id: string
@@ -34,9 +34,9 @@ export function newBlock(block: APIBlock): BaseBlock | null {
 
     const { id, kind } = block;
 
-    if (kind.toLowerCase() === "headertext") {
+    if (kind.toLowerCase() === "text") {
         const { text, type } = block.values;
-        baseBlock = new HeaderTextBlock(text, type, !Boolean(id));
+        baseBlock = new TextBlock(text, type, !Boolean(id));
         if (id) baseBlock.setId(id);
         return baseBlock;
     }
@@ -62,7 +62,7 @@ const replaceNullBlocks = (matrix: BaseBlock[][]) => {
     for (const blockList of matrix) {
         for (let i = 0; i < blockList.length; i++) {
             if (!blockList[i])
-                blockList[i] = new HeaderTextBlock("", "h2", true);
+                blockList[i] = new TextBlock("", "h2", true);
         }
     }
     return matrix;
