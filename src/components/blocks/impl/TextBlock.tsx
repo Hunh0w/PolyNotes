@@ -56,7 +56,7 @@ export default class TextBlock extends BaseBlock implements Props {
 
 function Component(props: Props) {
 
-    const { blocks, setBlocks, addNewBlock, deleteBlock, focusedBlock } = useContext(BlocksContext);
+    const { addNewBlock, deleteBlock, focusedBlock } = useContext(BlocksContext);
 
     const isFocused = focusedBlock ? focusedBlock.id === props.block?.id : false;
 
@@ -79,12 +79,12 @@ function Component(props: Props) {
             if (!evt.shiftKey) {
                 evt.preventDefault();
                 const newBlock = new TextBlock("", props.headerType, true);
-                addNewBlock(newBlock, props.block as BaseBlock, blocks, setBlocks);
+                addNewBlock(newBlock, props.block as BaseBlock);
             }
         } else if (key === "Backspace") {
             const currentText = editor?.getText().replaceAll("<br>", "");
             if (currentText === "") {
-                deleteBlock(props.block as BaseBlock, blocks, setBlocks);
+                deleteBlock(props.block as BaseBlock);
             }
         }
     }

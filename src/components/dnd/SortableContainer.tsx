@@ -1,16 +1,21 @@
 import {UniqueIdentifier, useDroppable} from "@dnd-kit/core";
 import {SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
-import React from "react";
+import React, {useContext} from "react";
 import SortableItem from "./SortableItem";
 import BaseBlock from "../blocks/BaseBlock";
+import {BlocksContext} from "../files/PolyFileEditor";
 
 const containerStyle = {
     width: "100%",
     height: "auto"
 };
 
-export default function SortableContainer(props: {id: UniqueIdentifier, items: BaseBlock[]}) {
-    const { id, items } = props;
+export default function SortableContainer(props: {id: UniqueIdentifier, containerIndex: number}) {
+    const { id, containerIndex } = props;
+
+    const { blocks } = useContext(BlocksContext);
+
+    const items = blocks[containerIndex];
 
     const { setNodeRef } = useDroppable({
         id

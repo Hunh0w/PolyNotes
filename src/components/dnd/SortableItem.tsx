@@ -1,10 +1,11 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import React, { ReactNode, useState } from "react";
+import React, {ReactNode, useContext, useState} from "react";
 import BaseBlock from "../blocks/BaseBlock";
 import { Box } from "@mui/material";
+import {BlocksContext} from "../files/PolyFileEditor";
 
-export function Item(props: { children: ReactNode, attributes: any, listeners: any, setNodeRef: any }) {
+export function Item(props: { block: BaseBlock, attributes: any, listeners: any, setNodeRef: any }) {
 
     const [isHover, setIsHover] = useState<boolean>(false);
 
@@ -16,12 +17,36 @@ export function Item(props: { children: ReactNode, attributes: any, listeners: a
         justifyContent: "center"
     };
 
+    const { blocks, setBlocks } = useContext(BlocksContext);
+
+    const getCurrentColumn = () => {
+        for(let colIndex = 0; colIndex < blocks.length; colIndex++) {
+            const blockList = blocks[colIndex];
+            for(let rowIndex = 0; rowIndex < blockList.length; rowIndex++){
+                const block = blockList[rowIndex];
+                if(block.id === props.block.id)
+                    return colIndex;
+            }
+        }
+        return null;
+    }
+
+    const addColumnAfter = () => {
+        const currentColumn = getCurrentColumn();
+        if(currentColumn === null) return;
+        setBlocks((prevBlocks: BaseBlock[][]) => {
+            return [...prevBlocks.slice(0, currentColumn+1),
+                [],
+                ...prevBlocks.slice(currentColumn+1, prevBlocks.length)]
+        })
+    }
+
     return <Box style={style}
         flexDirection={"row"}
         onMouseEnter={() => { setIsHover(true) }}
         onMouseLeave={() => { setIsHover(false) }}>
 
-        <button className="DragHandle" style={{ "height": "40px" }}>
+        <button className="DragHandle" style={{ "height": "40px" }} onClick={addColumnAfter}>
             {isHover ? "+" : null}
         </button>
         <button className="DragHandle" {...props.attributes} {...props.listeners} ref={props.setNodeRef} style={{ "height": "40px" }}>
@@ -31,7 +56,7 @@ export function Item(props: { children: ReactNode, attributes: any, listeners: a
                 </svg>
             }
         </button>
-        {props.children}
+        {props.block.getComponent()}
     </Box>;
 }
 
@@ -51,9 +76,7 @@ export default function SortableItem(props: { block: BaseBlock }) {
 
     return (
         <Box style={style} {...attributes}>
-            <Item attributes={attributes} listeners={listeners} setNodeRef={setNodeRef}>
-                {props.block.getComponent()}
-            </Item>
+            <Item attributes={attributes} listeners={listeners} setNodeRef={setNodeRef} block={props.block} />
         </Box>
     );
 }

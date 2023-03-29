@@ -17,9 +17,6 @@ import { Box } from "@mui/material";
 import SortableContainer from "./SortableContainer";
 import BaseBlock from "../blocks/BaseBlock";
 
-export interface ItemMatrix {
-    [propKey: string]: BaseBlock[]
-}
 interface Props {
     blockMatrix: BaseBlock[][]
     setBlockMatrix: (arg: any) => void
@@ -45,7 +42,7 @@ export default function SortableMatrix(props: Props) {
                 onDragEnd={handleDragEnd}
             >
                 {blockMatrix.map((blockList, index) => {
-                    return <SortableContainer id={"container" + index} key={index} items={blockList} />
+                    return <SortableContainer id={"container" + index} key={index} containerIndex={index} />
                 })}
 
                 <DragOverlay>{activeBlock ? <h4>{activeBlock.getOverlayLabel()}</h4> : null}</DragOverlay>
@@ -84,7 +81,6 @@ export default function SortableMatrix(props: Props) {
         const { id } = active;
         const { id: overId } = over;
 
-        // Find the containers
         const activeContainer = findContainer(id);
         const overContainer = findContainer(overId);
 
@@ -105,13 +101,11 @@ export default function SortableMatrix(props: Props) {
             const activeItems = prev[activeContainer];
             const overItems = prev[overContainer];
 
-            // Find the indexes for the items
             const activeIndex = activeItems.indexOf(activeBlock);
             const overIndex = overBlock ? overItems.indexOf(overBlock) : 0;
 
             let newIndex: number;
             if (overId in prev) {
-                // We're at the root droppable of a container
                 newIndex = overItems.length + 1;
             } else {
                 const isBelowLastItem =
@@ -134,20 +128,6 @@ export default function SortableMatrix(props: Props) {
                     ]
                 else return blockList;
             })
-
-            /*
-            return {
-                ...prev,
-                [activeContainer]: [
-                    ...prev[activeContainer].filter((block: BaseBlock) => block.id !== active.id)
-                ],
-                [overContainer]: [
-                    ...prev[overContainer].slice(0, newIndex),
-                    blockMatrix[activeContainer][activeIndex],
-                    ...prev[overContainer].slice(newIndex, prev[overContainer].length)
-                ]
-            };
-             */
         });
     }
 

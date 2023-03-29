@@ -78,9 +78,10 @@ function FilesExplorerService() {
 function FilesExplorerUI(props: { files: PolyFileBase[] }) {
 
     const [hover, setHover] = useState<string>("")
+    const navigate = useNavigate();
 
     const onClick = (file: PolyFileBase) => {
-        console.log(file) //TODO
+        navigate("/page/"+file.id)
     }
 
     const onMouseEnter = (id: string) => {

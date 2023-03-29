@@ -11,8 +11,9 @@ import StarterKit from "@tiptap/starter-kit";
 
 
 interface BlocksContextPrototype {
-    addNewBlock: (block: BaseBlock, afterBlock: BaseBlock, blocks: BaseBlock[][], setBlocks: (arg: any) => void) => void
-    deleteBlock: (block: BaseBlock, blocks: BaseBlock[][], setBlocks: (arg: any) => void) => void
+    addNewBlock: (block: BaseBlock, afterBlock: BaseBlock) => void
+    deleteBlock: (block: BaseBlock) => void
+    createNewBlock: (block: BaseBlock, columnIndex: number) => void
     focusedBlock: BaseBlock | null
     setFocusedBlock: (arg: any) => void
     blocks: BaseBlock[][]
@@ -22,6 +23,7 @@ interface BlocksContextPrototype {
 const BlocksContextDefaultValue = {
     addNewBlock: (block: BaseBlock, afterBlock: BaseBlock) => null,
     deleteBlock: (block: BaseBlock) => null,
+    createNewBlock: (block: BaseBlock, columnIndex: number) => null,
     focusedBlock: null,
     setFocusedBlock: (arg: any) => null,
     blocks: [],
@@ -32,8 +34,6 @@ export const BlocksContext = React.createContext<BlocksContextPrototype>(BlocksC
 
 export default function PolyFileEditor(props: { file: PolyFile, pageId: string }) {
     const navigate = useNavigate();
-
-    console.log(props.file.blocks)
 
     const [blocks, setBlocks] = useState<BaseBlock[][]>(props.file.blocks);
     const [fileName, setFileName] = useState<string>(props.file.name);
@@ -59,17 +59,32 @@ export default function PolyFileEditor(props: { file: PolyFile, pageId: string }
         }).find(index => index || index === 0);
     }
 
-    const deleteBlock = (block: BaseBlock, blocks: BaseBlock[][], setBlocks: (arg: any) => void) => {
+    const deleteBlock = (block: BaseBlock) => {
         const columnIndex = getBlockColumn(blocks, block);
         setBlocks((prev: BaseBlock[][]) => {
-            return prev.map((blockList, index) => {
+            const newMatrix = prev.map((blockList, index) => {
                 if (index !== columnIndex) return blockList;
                 return blockList.filter((block2) => block2.id !== block.id);
             })
+            return newMatrix.filter((blockList, index) => {
+                if (index !== columnIndex) return blockList;
+                if(blockList.length === 0) return null;
+                return blockList;
+            });
         })
     }
 
-    const addNewBlock = (block: BaseBlock, afterBlock: BaseBlock, blocks: BaseBlock[][], setBlocks: (arg: any) => void) => {
+    const createNewBlock = (block: BaseBlock, columnIndex: number) => {
+        setFocusedBlock(block);
+        setBlocks((prevBlocks) => {
+            return prevBlocks.map((blockList, index) => {
+               if(index !== columnIndex) return blockList;
+               return [...blockList, block];
+           });
+        });
+    }
+
+    const addNewBlock = (block: BaseBlock, afterBlock: BaseBlock) => {
         setFocusedBlock(block);
         const columnLastIndex = blocks.length - 1;
         const columnIndex = getBlockColumn(blocks, afterBlock);
@@ -125,6 +140,7 @@ export default function PolyFileEditor(props: { file: PolyFile, pageId: string }
     const blocksContextValue = {
         addNewBlock: addNewBlock,
         deleteBlock: deleteBlock,
+        createNewBlock: createNewBlock,
         focusedBlock: focusedBlock,
         setFocusedBlock: setFocusedBlock,
         blocks: blocks,
