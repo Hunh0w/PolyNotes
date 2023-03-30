@@ -186,10 +186,6 @@ export default function Sidebar(props: Props) {
         if (sharedOpen) toggleSharedOpen();
     };
 
-    const onCreateModal = () => {
-
-    }
-
     return (
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" open={open}>

@@ -8,6 +8,8 @@ import EditorSpeedDial from "../speed-dials/EditorSpeedDial";
 import { PolyFile } from "./impl/PolyFile";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import {PolyFileBase} from "./PolyFileBase";
+import {getPathOfFile} from "../../utils/files-utils";
 
 
 interface BlocksContextPrototype {
@@ -34,13 +36,15 @@ const BlocksContextDefaultValue = {
 export const BlocksContext = React.createContext<BlocksContextPrototype>(BlocksContextDefaultValue);
 
 
-export default function PolyFileEditor(props: { file: PolyFile, pageId: string }) {
+export default function PolyFileEditor(props: { file: PolyFile, files: PolyFileBase[], pageId: string }) {
     const navigate = useNavigate();
 
     const [blocks, setBlocks] = useState<BaseBlock[][]>(props.file.blocks);
     const [fileName, setFileName] = useState<string>(props.file.name);
 
     const [focusedBlock, setFocusedBlock] = useState<BaseBlock | null>(null);
+
+    const [ path, setPath ] = useState<PolyFileBase[]>(getPathOfFile(props.file, props.files));
 
     useEffect(() => {
         const token = localStorage.getItem("access_token");
@@ -177,18 +181,16 @@ export default function PolyFileEditor(props: { file: PolyFile, pageId: string }
                         <span style={{ color: "#7B10D4" }}>Poly</span>
                         <span style={{ color: "#000" }}>Notes</span>
                     </Typography>
-                    <Link underline="hover" color="inherit" href="#">
-                        Workspace 1
-                    </Link>
-                    <Link underline="hover" color="inherit" href="#">
-                        Folder 1
-                    </Link>
-                    <Link underline="hover" color="inherit" href="#">
-                        Folder 2
-                    </Link>
-                    <Typography variant="h6" color="text.primary" fontWeight={"bold"} fontStyle={{ "color": "#7B10D4" }}>
-                        <EditorContent editor={editor} style={{ paddingBlock: 5 }} />
-                    </Typography>
+                    {path.map((file, index) => {
+                        if(file.id === props.file.id)
+                            return <Typography key={index} variant="h6" color="text.primary" fontWeight={"bold"} fontStyle={{ "color": "#7B10D4" }}>
+                                <EditorContent editor={editor} style={{ paddingBlock: 5 }} />
+                            </Typography>
+
+                        return <Link key={index} underline="hover" color="inherit" href="#">
+                            {file.name}
+                        </Link>
+                    })};
                 </Breadcrumbs>
             </Box>
             <BlocksContext.Provider value={blocksContextValue}>

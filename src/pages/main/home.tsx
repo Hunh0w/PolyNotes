@@ -30,11 +30,18 @@ export default function HomePage() {
                 let files: PolyFileBase[] = [];
                 for (let i = 0; i < jsonFiles.files.length; i++) {
                     const jsonFile = jsonFiles.files[i];
+
+                    let parentId = null;
+                    if("parentId" in jsonFile)
+                        parentId = jsonFile.parentId;
+
                     const polyfile: PolyFileBase = jsonFile.isDirectory ?
-                        new PolyFolder(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, []) :
-                        new PolyFile(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, []);
+                        new PolyFolder(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, parentId) :
+                        new PolyFile(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, [], parentId);
                     files.push(polyfile);
                 }
+
+                console.log(files)
 
                 setFiles(files);
                 setLoading(false);
