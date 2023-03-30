@@ -26,16 +26,21 @@ const textTypes = [
     "p"
 ]
 
-export function DropdownBlocks(props: {handleClose: () => void, anchorEl: any}) {
+export function DropdownBlocks(props: {handleClose: () => void, anchorEl: any, currentBlock?: BaseBlock}) {
     const open = Boolean(props.anchorEl);
 
-    const { createNewBlock } = useContext(BlocksContext);
+    const { setBlockType, createNewBlock } = useContext(BlocksContext);
 
     const onAdd = (itemType: string) => {
         props.handleClose();
         let block = null;
-        if(["h1", "h2", "h3", "h4", "h5", "h6", "p"].includes(itemType))
+        if(["h1", "h2", "h3", "h4", "h5", "h6", "p"].includes(itemType)){
+            if(props.currentBlock) {
+                setBlockType(props.currentBlock, itemType);
+                return;
+            }
             block = new TextBlock("", itemType as HeaderTextType, true);
+        }
 
         if(!block) return;
         createNewBlock(block, 0);

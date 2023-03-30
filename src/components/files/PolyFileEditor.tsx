@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SortableMatrix from "../dnd/SortableMatrix";
-import TextBlock from "../blocks/impl/TextBlock";
+import TextBlock, {HeaderTextType} from "../blocks/impl/TextBlock";
 import BaseBlock from "../blocks/BaseBlock";
 import { useNavigate } from "react-router-dom";
 import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
@@ -14,6 +14,7 @@ interface BlocksContextPrototype {
     addNewBlock: (block: BaseBlock, afterBlock: BaseBlock) => void
     deleteBlock: (block: BaseBlock) => void
     createNewBlock: (block: BaseBlock, columnIndex: number) => void
+    setBlockType: (block: BaseBlock, itemType: string) => void
     focusedBlock: BaseBlock | null
     setFocusedBlock: (arg: any) => void
     blocks: BaseBlock[][]
@@ -24,6 +25,7 @@ const BlocksContextDefaultValue = {
     addNewBlock: (block: BaseBlock, afterBlock: BaseBlock) => null,
     deleteBlock: (block: BaseBlock) => null,
     createNewBlock: (block: BaseBlock, columnIndex: number) => null,
+    setBlockType: (block: BaseBlock, itemType: string) => null,
     focusedBlock: null,
     setFocusedBlock: (arg: any) => null,
     blocks: [],
@@ -117,6 +119,24 @@ export default function PolyFileEditor(props: { file: PolyFile, pageId: string }
         )
     }
 
+    const setBlockType = (block: BaseBlock, itemType: string) => {
+        setBlocks((prevBlocks: BaseBlock[][]) => {
+            return prevBlocks.map((blockList: BaseBlock[]) => {
+                return blockList.map((oldBlock: BaseBlock) => {
+                    if(oldBlock.id !== block.id)
+                        return oldBlock;
+                    if(oldBlock.constructor.name === TextBlock.name){
+                        const block = oldBlock as TextBlock;
+                        block.headerType = itemType as HeaderTextType;
+                        block.generateId();
+                        return block;
+                    }
+                    return oldBlock;
+                })
+            })
+        })
+    }
+
     const editor = useEditor({
         extensions: [
             StarterKit
@@ -141,6 +161,7 @@ export default function PolyFileEditor(props: { file: PolyFile, pageId: string }
         addNewBlock: addNewBlock,
         deleteBlock: deleteBlock,
         createNewBlock: createNewBlock,
+        setBlockType: setBlockType,
         focusedBlock: focusedBlock,
         setFocusedBlock: setFocusedBlock,
         blocks: blocks,

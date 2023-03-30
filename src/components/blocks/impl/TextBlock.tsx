@@ -1,12 +1,14 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import BaseBlock from "../BaseBlock";
-import { KeyboardEventHandler, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, { KeyboardEventHandler, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { BlocksContext } from "../../files/PolyFileEditor";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Text from '@tiptap/extension-text'
 import Paragraph from "@tiptap/extension-paragraph";
 import { UniqueIdentifier } from "@dnd-kit/core";
+import {Placeholder} from "@tiptap/extension-placeholder";
+import {DropdownBlocks} from "../BlockFactory";
 
 interface Props {
     text: string
@@ -60,10 +62,21 @@ function Component(props: Props) {
 
     const isFocused = focusedBlock ? focusedBlock.id === props.block?.id : false;
 
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const onAddBlock = (event: any) => {
+        setAnchorEl(event.currentTarget);
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    }
+
     const editor = useEditor({
         extensions: [
             StarterKit,
-            Paragraph
+            Placeholder.configure({
+                placeholder: 'Press / to show the component list'
+            })
         ],
         content: `<${props.headerType}>${props.text}</${props.headerType}>`,
         autofocus: isFocused,
@@ -86,13 +99,22 @@ function Component(props: Props) {
             if (currentText === "") {
                 deleteBlock(props.block as BaseBlock);
             }
+        } else if(key === "/") {
+            const currentText = editor?.getText().replaceAll("<br>", "");
+            if(currentText && currentText.endsWith("\\")){
+                const newText = currentText.slice(0, currentText.length-1);
+                console.log(newText)
+                editor?.commands.setContent(`<${props.headerType}>${newText}</${props.headerType}>`);
+                props.setText(newText);
+                return;
+            }
+            onAddBlock(evt);
         }
     }
 
-
-
     return <Box width={"100%"} height={"100%"}>
-        <EditorContent editor={editor} placeholder={"Press / to show the component list"} onKeyDownCapture={handleKeyDown} style={{ "height": "100%" }} />
+        <EditorContent editor={editor} onKeyDownCapture={handleKeyDown} style={{ "height": "100%" }} />
+        <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} currentBlock={props.block} />
     </Box>
 
 }

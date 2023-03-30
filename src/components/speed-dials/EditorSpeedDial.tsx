@@ -77,6 +77,12 @@ export default function EditorSpeedDial(props: { pageId: string, fileName: strin
                 />
 
                 <SpeedDialAction
+                    icon={<AddBox />}
+                    tooltipTitle={"Add Block"}
+                    onClick={onAddBlock}
+                />
+
+                <SpeedDialAction
                     icon={<FileCopyIcon />}
                     tooltipTitle={"Clone"}
                 />
@@ -86,15 +92,6 @@ export default function EditorSpeedDial(props: { pageId: string, fileName: strin
                     tooltipTitle={"Share"}
                 />
 
-                <SpeedDialAction
-                    icon={<ViewWeek />}
-                    tooltipTitle={"Edit Columns"}
-                />
-                <SpeedDialAction
-                    icon={<AddBox />}
-                    tooltipTitle={"Add Block"}
-                    onClick={onAddBlock}
-                />
             </SpeedDial >
             <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} />
         </>

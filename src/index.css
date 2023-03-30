@@ -56,3 +56,40 @@ h6 {
   overflow: visible;
   fill: #919eab;
 }
+
+
+
+.ProseMirror p.is-empty::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror h1.is-empty::before, h2.is-empty::before, h3.is-empty::before, h4.is-empty::before, h5.is-empty::before, h6.is-empty::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror h1.is-empty::before {
+  font-size: 16pt;
+}
+.ProseMirror h2.is-empty::before {
+  font-size: 15pt;
+}
+.ProseMirror h3.is-empty::before {
+  font-size: 14pt;
+}
+.ProseMirror h4.is-empty::before {
+  font-size: 13pt;
+}
+.ProseMirror h5.is-empty::before {
+  font-size: 12pt;
+}
+.ProseMirror h6.is-empty::before {
+  font-size: 11pt;
+}
