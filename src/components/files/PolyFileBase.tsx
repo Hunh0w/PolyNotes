@@ -19,4 +19,6 @@ export abstract class PolyFileBase {
         this.parentId = parentId??null;
     }
 
+    public abstract getHash(): string;
+
 }

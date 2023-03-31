@@ -83,6 +83,8 @@ export default function PolyFileEditor(props: { file: PolyFile, files: PolyFileB
     const createNewBlock = (block: BaseBlock, columnIndex: number) => {
         setFocusedBlock(block);
         setBlocks((prevBlocks) => {
+            if(prevBlocks.length == 0)
+                return [[block]];
             return prevBlocks.map((blockList, index) => {
                if(index !== columnIndex) return blockList;
                return [...blockList, block];

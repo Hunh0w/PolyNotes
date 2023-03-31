@@ -7,6 +7,7 @@ import {useContext, useRef} from "react";
 import {url} from "../../utils/conf";
 import {AlertContext} from "../AlertManager";
 import TextBlock from "../blocks/impl/TextBlock";
+import {PolyFileBase} from "../files/PolyFileBase";
 
 const createModalStyle = {
     position: 'absolute' as 'absolute',
@@ -30,7 +31,7 @@ const StyledButton = styled(ButtonBase)(({ theme }) => ({
     border: "2px solid black"
 }));
 
-export default function CreatePageModal(props: {sidebarOpen: boolean}) {
+export default function CreatePageModal(props: {sidebarOpen: boolean, selectedFile: PolyFileBase | null}) {
 
     const { addAlert } = useContext(AlertContext);
 
@@ -38,15 +39,15 @@ export default function CreatePageModal(props: {sidebarOpen: boolean}) {
     const [isDirectory, setIsDirectory] = React.useState(false);
 
     const nameRef = useRef(null);
-    const parentRef = useRef(null);
 
     const onCreate = () => {
         const currentName: any = nameRef.current;
-        const currentParent: any = parentRef.current;
 
         const defaultBlock = new TextBlock("", "h3", true);
+        const parentId = props.selectedFile ? {parentId: props.selectedFile.id} : {};
 
         const object = {
+            ...parentId,
             name: currentName.value,
             isDirectory: isDirectory,
             blocks: [{
@@ -74,8 +75,12 @@ export default function CreatePageModal(props: {sidebarOpen: boolean}) {
             },
             body: JSON.stringify(object)
         }).then((response) => {
+            setCreateModal(false);
             if (response.status == 201) {
                 addAlert({message: "your " + kind + " has been successfully created", severity: "success"})
+                setTimeout(() => {
+                   window.location.reload();
+                }, 1000);
             } else {
                 addAlert({message: "the " + kind + " could not be created", severity: "error"})
             }
@@ -99,13 +104,10 @@ export default function CreatePageModal(props: {sidebarOpen: boolean}) {
                     </FormGroup>
                     <Box display={"flex"} justifyContent={"center"} alignItems={"center"} flexDirection={"column"}>
                         <TextField placeholder={"Name..."} sx={{mt: 3, width: "80%"}} inputRef={nameRef} />
-                        <TextField placeholder={"Parent Folder..."} sx={{mt: 3, width: "80%"}} inputRef={parentRef} />
 
                         <StyledButton sx={{mt: 3, width: "60%", height: "50px"}} onClick={onCreate}>Create</StyledButton>
                     </Box>
-
                 </Box>
-
             </Box>
         </Modal>
         <StyledButton onClick={() => setCreateModal(true)}>

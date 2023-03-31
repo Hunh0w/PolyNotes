@@ -10,44 +10,26 @@ import { url } from "../../utils/conf";
 import { PolyFileBase } from "../../components/files/PolyFileBase";
 import { PolyFolder } from "../../components/files/impl/PolyFolder";
 import { PolyFile } from "../../components/files/impl/PolyFile";
+import {getOwnedFiles} from "../../services/FilesService";
 
+interface APIResponse {
+    files: PolyFileBase[] | null
+    loading: boolean
+}
 
 export default function HomePage() {
 
-    const [files, setFiles] = useState<PolyFileBase[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [ response, setResponse ] = useState<APIResponse>({files: [], loading: true})
     const navigate = useNavigate();
 
     const fetchFile = () => {
-        return fetch(url + "/files", {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("access_token")
-            }
-        }).then(async (response) => {
-            if (response.status === 200) {
-                const jsonFiles = await response.json();
-                let files: PolyFileBase[] = [];
-                for (let i = 0; i < jsonFiles.files.length; i++) {
-                    const jsonFile = jsonFiles.files[i];
-
-                    let parentId = null;
-                    if("parentId" in jsonFile)
-                        parentId = jsonFile.parentId;
-
-                    const polyfile: PolyFileBase = jsonFile.isDirectory ?
-                        new PolyFolder(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, parentId) :
-                        new PolyFile(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, [], parentId);
-                    files.push(polyfile);
-                }
-
-                console.log(files)
-
-                setFiles(files);
-                setLoading(false);
-            } else if (response.status === 401) {
+        getOwnedFiles().then((response) => {
+            if(response.status === 200){
+                const files = response.files;
+                setResponse({files: files, loading: files === null})
+            }else if(response.status === 401){
                 navigate("/login");
-            } else {
+            }else {
                 navigate("/");
             }
         })
@@ -57,7 +39,7 @@ export default function HomePage() {
         fetchFile();
     }, []);
 
-    return <AuthChecker loading={loading}>
+    return <AuthChecker loading={response.loading}>
         <Sidebar>
             <Typography variant={"h4"}>
                 Recent
@@ -66,9 +48,8 @@ export default function HomePage() {
             <RecentFiles />
 
             <Box mt={10}>
-                <FilesExplorer files={files} />
+                <FilesExplorer files={response.files as PolyFileBase[]} />
             </Box>
-
         </Sidebar >
     </AuthChecker>
 }
