@@ -12,6 +12,7 @@ import DocumentPage from './components/files/PolyFileEditor';
 import PolyPage from './pages/main/pages';
 import { Alert, Box } from '@mui/material';
 import AlertManager from './components/AlertManager';
+import Lab from "./pages/main/lab";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path={"register"} element={<RegisterPage />} />
       <Route path={"home"} element={<HomePage />} />
       <Route path={"page/:pageId"} element={<PolyPage />} />
+      <Route path={"lab"} element={<Lab />} />
     </Route>
   )
 )
