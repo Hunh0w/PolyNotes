@@ -1,64 +1,130 @@
 import * as React from 'react';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { useDemoData } from '@mui/x-data-grid-generator';
+import {
+    Box,
+    Tab, Tabs,
+} from "@mui/material";
+import Typography from "@mui/material/Typography";
+import {Table, TableComponent} from "../../components/blocks/impl/database/TableComponent";
+import {useState} from "react";
+import {generateId} from "../../utils/string-utils";
 
 export default function Lab(props: {}){
     return <DatabaseComponent />
 }
 
-function DatabaseComponent(props: any) {
-    return <ToolbarGrid />
+
+interface DatabaseContextPrototype {
+    tables: Table[]
+    setTables: (arg: any) => void
+}
+export const DatabaseContext = React.createContext<DatabaseContextPrototype>({
+    tables: [],
+    setTables: (arg: any) => null
+});
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+    table: Table
 }
 
-
-
-export function ToolbarGrid() {
-    const data: any = {
-        columns: [
-            {
-                field: "id",
-                editable: true,
-                headerName: "ID",
-                width: 180
-            },
-            {
-                field: "name",
-                editable: true,
-                headerName: "Name",
-                width: 280
-            }
-        ],
-        initialState: {
-            columns: {
-                columnVisibilityModel: {id: false}
-            }
-        },
-        rows: [
-            {
-                id: "29774927642Y4",
-                name: "HELLO"
-            },
-            {
-                id: "29774D927642Y4",
-                name: "HELLO"
-            },
-            {
-                id: "29774927642EY4",
-                name: "HELLO"
-            }
-        ]
-    }
-
-    console.log(data);
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, table, ...other } = props;
 
     return (
-        <div style={{ height: 400, width: '70%', margin: 10 }}>
-            <DataGrid
-                {...data}
-                slots={{
-                    toolbar: GridToolbar,
-                }}
-            />
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            {...other}
+        >
+            {value === index && (
+                <TableComponent table={table} />
+            )}
         </div>
     );
 }
+
+export function DatabaseComponent(){
+    const [value, setValue] = React.useState(0);
+
+    const [ tables, setTables ] = useState<Table[]>([{
+        name: "users",
+        data: {
+            columns: [
+                {
+                    field: "id",
+                    editable: true,
+                    headerName: "ID",
+                    width: 120
+                },
+                {
+                    field: "name",
+                    editable: true,
+                    headerName: "Name",
+                    width: 120
+                }
+            ],
+            rows: [
+                {
+                    id: generateId(16),
+                    name: "Exampleee"
+                }
+            ]
+        }
+    },
+    {
+        name: "livres",
+        data: {
+            columns: [
+                {
+                    field: "id",
+                    editable: true,
+                    headerName: "ID",
+                    width: 120
+                },
+                {
+                    field: "name",
+                    editable: true,
+                    headerName: "Name",
+                    width: 120
+                }
+            ],
+            rows: [
+                {
+                    id: generateId(16),
+                    name: "LivreExample"
+                }
+            ]
+        }
+    }]);
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+
+    const DatabaseContextValue: DatabaseContextPrototype = {
+        tables: tables,
+        setTables: setTables
+    }
+
+    return (
+        <Box sx={{ m: 10, width: '70%', border: "1px solid rgba(0,0,0,0.1)" }}>
+            <DatabaseContext.Provider value={DatabaseContextValue}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={value} onChange={handleChange} textColor={"secondary"} indicatorColor={"secondary"}>
+                        {tables.map((table, index) => {
+                          return <Tab label={table.name} key={index} />
+                        })}
+                    </Tabs>
+                </Box>
+                {tables.map((table, index) => {
+                    return <TabPanel key={index} value={value} index={index} table={table}>
+                        {table.name}
+                    </TabPanel>
+                })}
+            </DatabaseContext.Provider>
+        </Box>
+    );
+}
+
