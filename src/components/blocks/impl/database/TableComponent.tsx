@@ -12,8 +12,9 @@ import {styled} from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import {generateId} from "../../../../utils/string-utils";
-import {DatabaseContext} from "../../../../pages/main/lab";
 import {KeyboardCode} from "@dnd-kit/core";
+import {DatabaseContext} from "./DatabaseBlock";
+import {BlocksContext} from "../../../files/PolyFileEditor";
 
 const initialState = {
     columns: {
@@ -53,25 +54,22 @@ function formatData(data: any){
 
 export function TableComponent(props: {table: Table}) {
 
-    const { setTables } = useContext(DatabaseContext);
+    const { tables, setTables } = useContext(DatabaseContext);
+    const { file } = useContext(BlocksContext);
 
     let data = props.table.data;
     if(!data) return <></>
     data = withInitialState(data);
 
     const saveComponent = (dataObj: any) => {
-        setTables((prevTables: Table[]) => {
-            return prevTables.map((table: Table) => {
+        setTables(tables.map((table: Table) => {
                 if(table.name.toLowerCase() === props.table.name.toLowerCase())
                     return {name: props.table.name, data: dataObj}
                 return table;
-            })
-        })
+            }));
     }
 
     const onCellEdit = (params: GridCellParams, evt: any) => {
-
-        console.log(evt)
 
         const row: any = params.row;
         row[params.field] = evt.target.value;
@@ -88,11 +86,14 @@ export function TableComponent(props: {table: Table}) {
         saveComponent(dataObject);
     }
 
+    if(!file) return <></>
+
     return (
         <div style={{ height: 400, width: '100%' }}>
             <DataGrid
                 {...data}
                 onCellEditStop={onCellEdit}
+                isCellEditable={() => file.canEdit()}
                 slotProps={{
                     toolbar: {
                         setData: saveComponent,
@@ -100,7 +101,7 @@ export function TableComponent(props: {table: Table}) {
                     }
                 }}
                 slots={{
-                    toolbar: CustomToolbar,
+                    toolbar: file.canEdit() ? CustomToolbar : null,
                 }}
             />
         </div>

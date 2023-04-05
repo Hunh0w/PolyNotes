@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SortableMatrix from "../dnd/SortableMatrix";
+import SortableMatrix from "../dnd/editor/SortableMatrix";
 import TextBlock, {HeaderTextType} from "../blocks/impl/TextBlock";
 import BaseBlock from "../blocks/BaseBlock";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,7 @@ interface BlocksContextPrototype {
     setFocusedBlock: (arg: any) => void
     blocks: BaseBlock[][]
     setBlocks: (arg: any) => void
+    file: PolyFile | null
 }
 
 const BlocksContextDefaultValue = {
@@ -31,7 +32,8 @@ const BlocksContextDefaultValue = {
     focusedBlock: null,
     setFocusedBlock: (arg: any) => null,
     blocks: [],
-    setBlocks: (arg: any) => null
+    setBlocks: (arg: any) => null,
+    file: null
 }
 export const BlocksContext = React.createContext<BlocksContextPrototype>(BlocksContextDefaultValue);
 
@@ -44,7 +46,7 @@ export default function PolyFileEditor(props: { file: PolyFile, files: PolyFileB
 
     const [focusedBlock, setFocusedBlock] = useState<BaseBlock | null>(null);
 
-    const [ path, setPath ] = useState<PolyFileBase[]>(getPathOfFile(props.file, props.files));
+    const path = getPathOfFile(props.file, props.files);
 
     useEffect(() => {
         const token = localStorage.getItem("access_token");
@@ -148,6 +150,7 @@ export default function PolyFileEditor(props: { file: PolyFile, files: PolyFileB
             StarterKit
         ],
         content: `${fileName}`,
+        editable: props.file.canEdit(),
         onUpdate: ({ editor }) => {
             const newText = editor.getText();
             setFileName(newText);
@@ -164,6 +167,7 @@ export default function PolyFileEditor(props: { file: PolyFile, files: PolyFileB
 
 
     const blocksContextValue = {
+        file: props.file,
         addNewBlock: addNewBlock,
         deleteBlock: deleteBlock,
         createNewBlock: createNewBlock,
@@ -197,7 +201,7 @@ export default function PolyFileEditor(props: { file: PolyFile, files: PolyFileB
             </Box>
             <BlocksContext.Provider value={blocksContextValue}>
                 <SortableMatrix blockMatrix={blocks} setBlockMatrix={setBlocks} />
-                <EditorSpeedDial pageId={props.pageId} fileName={editor?.getText() ?? "??"} />
+                <EditorSpeedDial />
             </BlocksContext.Provider>
         </>
 

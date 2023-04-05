@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/sortable';
 import { Box } from "@mui/material";
 import SortableContainer from "./SortableContainer";
-import BaseBlock from "../blocks/BaseBlock";
+import BaseBlock from "../../blocks/BaseBlock";
 
 interface Props {
     blockMatrix: BaseBlock[][]

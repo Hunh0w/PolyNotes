@@ -5,10 +5,19 @@ import md5 from "md5";
 export class PolyFile extends PolyFileBase {
 
     public blocks: BaseBlock[][]
+    public memberType: string
 
-    constructor(id: string, name: string, lastModified: number, ownerId: string, blocks: BaseBlock[][], parentId?: string) {
+    constructor(id: string, name: string, lastModified: number, ownerId: string, blocks: BaseBlock[][], memberType: string, parentId?: string) {
         super(id, name, lastModified, ownerId, false, parentId);
         this.blocks = blocks;
+        this.memberType = memberType;
+    }
+
+    canEdit(): boolean {
+        if(!this.memberType) return false;
+        if(this.memberType.toLowerCase() === "editor" || this.memberType.toLowerCase() === "owner")
+            return true;
+        return false;
     }
 
     getHash(): string {

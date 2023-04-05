@@ -6,6 +6,9 @@ import {Cloud, ContentCopy, ContentCut, ContentPaste, MoreVert} from "@mui/icons
 import {Divider, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Paper, Typography} from "@mui/material";
 import React, {useContext} from "react";
 import {BlocksContext} from "../files/PolyFileEditor";
+import DatabaseBlock from "./impl/database/DatabaseBlock";
+import {generateId} from "../../utils/string-utils";
+import KanbanBlock from "./impl/kanban/KanbanBlock";
 
 interface APIBlock {
     id: string
@@ -15,7 +18,7 @@ interface APIBlock {
     rowIndex: number
 }
 
-const textTypes = [
+const types = [
     "h1",
     "h2",
     "h3",
@@ -23,7 +26,10 @@ const textTypes = [
     "h5",
     "h6",
     "--",
-    "p"
+    "p",
+    "--",
+    "Database",
+    "Kanban"
 ]
 
 export function DropdownBlocks(props: {handleClose: () => void, anchorEl: any, currentBlock?: BaseBlock}) {
@@ -40,6 +46,59 @@ export function DropdownBlocks(props: {handleClose: () => void, anchorEl: any, c
                 return;
             }
             block = new TextBlock("", itemType as HeaderTextType, true);
+        }else if(itemType.toLowerCase() === "database"){
+            block = new DatabaseBlock("", [{
+                name: "users",
+                data: {
+                    columns: [
+                        {
+                            field: "id",
+                            editable: true,
+                            headerName: "ID",
+                            width: 120
+                        },
+                        {
+                            field: "name",
+                            editable: true,
+                            headerName: "Name",
+                            width: 120
+                        }
+                    ],
+                    rows: [
+                        {
+                            id: generateId(16),
+                            name: "Exampleee"
+                        }
+                    ]
+                }
+            },
+                {
+                    name: "livres",
+                    data: {
+                        columns: [
+                            {
+                                field: "id",
+                                editable: true,
+                                headerName: "ID",
+                                width: 120
+                            },
+                            {
+                                field: "name",
+                                editable: true,
+                                headerName: "Name",
+                                width: 120
+                            }
+                        ],
+                        rows: [
+                            {
+                                id: generateId(16),
+                                name: "LivreExample"
+                            }
+                        ]
+                    }
+                }], true);
+        }else if(itemType.toLowerCase() === "kanban"){
+            block = new KanbanBlock([], true);
         }
 
         if(!block) return;
@@ -62,7 +121,7 @@ export function DropdownBlocks(props: {handleClose: () => void, anchorEl: any, c
                 },
             }}
         >
-            {textTypes.map((type, index) => {
+            {types.map((type, index) => {
                 if(type === "--") return <Divider key={index} />
                 else return <MenuItem key={index} selected={type === "p"} onClick={() => onAdd(type)}>
                     {type}
@@ -100,6 +159,16 @@ export function newBlock(block: APIBlock): BaseBlock | null {
         const { text, type } = block.values;
         baseBlock = new TextBlock(text, type, !Boolean(id));
         if (id) baseBlock.setId(id);
+        return baseBlock;
+    }else if(kind.toLowerCase() === "database"){
+        const { name, tables } = block.values;
+        baseBlock = new DatabaseBlock(name, tables, !Boolean(id));
+        if (id) baseBlock.setId(id);
+        return baseBlock;
+    }else if(kind.toLowerCase() === "kanban") {
+        const { containers } = block.values;
+        baseBlock = new KanbanBlock(containers, !Boolean(id));
+        if(id) baseBlock.setId(id);
         return baseBlock;
     }
 

@@ -35,21 +35,23 @@ export default function PolyPage(props: {}) {
         }).then(async (response) => {
             if (response.status === 200) {
                 const jsonFile = await response.json();
+                const memberType = response.headers.get("MemberType")??"editor";
 
                 let parentId = null;
-                if("parentId" in jsonFile)
+                if ("parentId" in jsonFile)
                     parentId = jsonFile.parentId;
 
                 const polyFile: PolyFileBase = jsonFile.isDirectory ?
                     new PolyFolder(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, parentId) :
-                    new PolyFile(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, generateMatrixBlocks(jsonFile.blocks), parentId)
+                    new PolyFile(jsonFile.id, jsonFile.name, jsonFile.lastModified, jsonFile.ownerId, generateMatrixBlocks(jsonFile.blocks), memberType, parentId)
 
                 console.log(polyFile);
 
                 return {file: polyFile}
-            } else {
-                return {file: null}
+            }else if(response.status === 403){
+                navigate("/home");
             }
+            return {file: null}
         })
         const filesPromise = fetch(url + "/files", {
             method: "GET",

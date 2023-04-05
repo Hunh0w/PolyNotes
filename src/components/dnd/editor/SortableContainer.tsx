@@ -2,8 +2,8 @@ import {UniqueIdentifier, useDroppable} from "@dnd-kit/core";
 import {SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
 import React, {useContext} from "react";
 import SortableItem from "./SortableItem";
-import BaseBlock from "../blocks/BaseBlock";
-import {BlocksContext} from "../files/PolyFileEditor";
+import BaseBlock from "../../blocks/BaseBlock";
+import {BlocksContext} from "../../files/PolyFileEditor";
 
 const containerStyle = {
     width: "100%",

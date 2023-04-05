@@ -58,7 +58,7 @@ export default class TextBlock extends BaseBlock implements Props {
 
 function Component(props: Props) {
 
-    const { addNewBlock, deleteBlock, focusedBlock } = useContext(BlocksContext);
+    const { file, addNewBlock, deleteBlock, focusedBlock } = useContext(BlocksContext);
 
     const isFocused = focusedBlock ? focusedBlock.id === props.block?.id : false;
 
@@ -79,6 +79,7 @@ function Component(props: Props) {
             })
         ],
         content: `<${props.headerType}>${props.text}</${props.headerType}>`,
+        editable: file?.canEdit(),
         autofocus: isFocused,
         onUpdate: ({ editor }) => {
             const newText = editor.getText();

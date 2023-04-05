@@ -6,23 +6,30 @@ import SaveIcon from '@mui/icons-material/Save';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import {AddBox, PlusOne, ViewColumn, ViewWeek} from '@mui/icons-material';
-import React, { useContext } from 'react';
+import React, {useContext, useState} from 'react';
 import { BlocksContext } from '../files/PolyFileEditor';
 import {DropdownBlocks, toJson} from '../blocks/BlockFactory';
 import { useNavigate } from 'react-router-dom';
 import { url } from '../../utils/conf';
 import { AlertContext } from '../AlertManager';
 import {Divider} from "@mui/material";
+import SharePageModal from "../modals/SharePageModal";
+import {PolyFile} from "../files/impl/PolyFile";
 
-export default function EditorSpeedDial(props: { pageId: string, fileName: string }) {
+export default function EditorSpeedDial(props: {}) {
 
-    const { blocks } = useContext(BlocksContext);
+    const { file, blocks } = useContext(BlocksContext);
     const navigate = useNavigate();
     const { addAlert } = useContext(AlertContext);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
+    const [shareModal, setShareModal] = useState(false);
+
+    if(!file) return <></>
+
     const onSave = () => {
+        if(!file.canEdit()) return;
         const token = localStorage.getItem("access_token");
         if (!token) {
             navigate("/login")
@@ -31,8 +38,8 @@ export default function EditorSpeedDial(props: { pageId: string, fileName: strin
 
         const jsonBlocks = toJson(blocks);
         const jsonPolyFile = {
-            id: props.pageId,
-            name: props.fileName,
+            id: file.id,
+            name: file.name,
             blocks: jsonBlocks
         }
 
@@ -46,11 +53,16 @@ export default function EditorSpeedDial(props: { pageId: string, fileName: strin
         }).then((response) => {
             if (response.status === 200) {
                 addAlert({ message: "File successfully saved !", severity: "success" })
+            }else if(response.status === 401){
+                navigate("/login")
+            }else if(response.status === 403){
+                addAlert({message: "You don't have permission to write this Page", severity: "warning"})
             }
         })
     }
 
     const onAddBlock = (event: any) => {
+        if(!file.canEdit()) return;
         setAnchorEl(event.currentTarget);
     }
 
@@ -90,10 +102,14 @@ export default function EditorSpeedDial(props: { pageId: string, fileName: strin
                 <SpeedDialAction
                     icon={<ShareIcon />}
                     tooltipTitle={"Share"}
+                    onClick={() => {
+                        if(!file.canEdit()) return;
+                        setShareModal(true)
+                    }}
                 />
-
             </SpeedDial >
             <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} />
+            <SharePageModal pageId={file.id} fileName={file.name} modal={shareModal} setModal={setShareModal} />
         </>
     );
 }
