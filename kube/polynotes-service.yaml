@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: polynotes-front-service
+spec:
+  ports:
+  - nodePort: 81
+    name: insecure
+    port: 81
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app.kubernetes.io/name: polynotes-front
+  type: NodePort
