@@ -4,9 +4,9 @@ metadata:
   name: polynotes-front-service
 spec:
   ports:
-  - nodePort: 81
+  - nodePort: 80
     name: insecure
-    port: 81
+    port: 80
     protocol: TCP
     targetPort: 3000
   selector:

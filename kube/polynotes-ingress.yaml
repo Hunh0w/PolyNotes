@@ -15,4 +15,4 @@ spec:
           service:
             name: polynotes-front-service
             port:
-              number: 81
+              number: 80
