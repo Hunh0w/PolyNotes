@@ -6,9 +6,9 @@ spec:
   ports:
   - nodePort: 80
     name: insecure
-    port: 3000
+    port: 80
     protocol: TCP
-    targetPort: 80
+    targetPort: 3000
   selector:
     app.kubernetes.io/name: polynotes-front
   type: NodePort
