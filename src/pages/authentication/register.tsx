@@ -181,7 +181,7 @@ export default function RegisterPage() {
                     error={cguError ? true : false}>
                     <FormControlLabel
                         control={<Checkbox inputRef={cgu_ref} onChange={() => resetError(cguError, setCGUError)} />}
-                        label={<span>I accept the <Link href="#">CGU</Link></span>} />
+                        label={<span>I accept the <Link href="/cgu">CGU</Link></span>} />
                     <FormHelperText>{cguError}</FormHelperText>
                 </FormControl>
 
