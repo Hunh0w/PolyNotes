@@ -14,6 +14,7 @@ import { Alert, Box } from '@mui/material';
 import AlertManager from './components/AlertManager';
 import Lab from "./pages/main/lab";
 import CGUPage from "./pages/cgu";
+import EmailVerifPage from "./pages/authentication/email_verif";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -30,8 +31,8 @@ const router = createBrowserRouter(
       <Route path={"register"} element={<RegisterPage />} />
       <Route path={"home"} element={<HomePage />} />
       <Route path={"page/:pageId"} element={<PolyPage />} />
-      <Route path={"lab"} element={<Lab />} />
       <Route path={"cgu"} element={<CGUPage />} />
+      <Route path={"register/verify/:token"} element={<EmailVerifPage />} />
     </Route>
   )
 )

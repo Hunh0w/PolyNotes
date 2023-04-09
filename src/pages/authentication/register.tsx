@@ -11,13 +11,16 @@ import {
     Typography
 } from "@mui/material";
 import PasswordArea, {InputError} from "../../components/inputs/PasswordInput";
-import {useRef, useState} from "react";
+import {useContext, useRef, useState} from "react";
 import {url} from "../../utils/conf";
 import {useNavigate} from "react-router-dom";
+import {AlertContext} from "../../components/AlertManager";
 
 export default function RegisterPage() {
 
     const navigate = useNavigate();
+
+    const { addAlert } = useContext(AlertContext);
 
     const firstname_ref = useRef(null);
     const lastname_ref = useRef(null);
@@ -119,8 +122,9 @@ export default function RegisterPage() {
                 setApiError("Error: "+jsonObj.message)
                 return;
             }
-            if(resp.status === 201){
-                navigate("/login")
+            if(resp.status === 200){
+                addAlert({severity: "success", message: "We have just sent you a confirmation email to "+register_payload.email+", please click on it to activate your account and start using PolyNotes!"})
+                navigate("/")
             }
         });
     }

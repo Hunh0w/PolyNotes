@@ -26,7 +26,7 @@ export default function PolyPage(props: {}) {
             navigate("/home");
             return;
         }
-        const filePromise = fetch(url + "/file/" + pageId, {
+        fetch(url + "/file/" + pageId, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + token
