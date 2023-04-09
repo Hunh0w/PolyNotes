@@ -8,13 +8,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Box, CircularProgress, Divider, Icon, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Typography } from '@mui/material';
-import { Cloud, ContentCopy, ContentCut, ContentPaste, Delete, Description, Folder, MoreVert, Share, Visibility } from '@mui/icons-material';
-import { useEffect, useState } from 'react';
+import { Delete, Description, Folder, MoreVert, Share, Visibility } from '@mui/icons-material';
+import {useContext, useEffect, useState} from 'react';
 import { PolyFileBase } from '../files/PolyFileBase';
 import { useNavigate } from 'react-router-dom';
-import { url } from '../../utils/conf';
-import { PolyFolder } from '../files/impl/PolyFolder';
-import { PolyFile } from '../files/impl/PolyFile';
+import {UserContext} from "../auth/AuthChecker";
+import SharePageModal from "../modals/SharePageModal";
+import {PolyFile} from "../files/impl/PolyFile";
+import {deleteFile} from "../../services/FilesService";
+import {AlertContext, PolyAlert} from "../AlertManager";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -38,9 +40,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-export default function FilesExplorer(props: { files: PolyFileBase[] }) {
+export default function FilesExplorer() {
 
-    return <FilesExplorerUI files={props.files} />
+    const {files} = useContext(UserContext);
+
+    return <FilesExplorerUI files={files} />
 }
 
 interface APIResponse {
@@ -77,6 +81,7 @@ function FilesExplorerService() {
 
 function FilesExplorerUI(props: { files: PolyFileBase[] }) {
 
+    const [shareFile, setShareFile] = useState<PolyFile | null>(null);
     const [hover, setHover] = useState<string>("")
     const navigate = useNavigate();
 
@@ -92,7 +97,13 @@ function FilesExplorerUI(props: { files: PolyFileBase[] }) {
         setHover("")
     }
 
-    return (
+    const shareModal = Boolean(shareFile);
+    const setModal = (bool: boolean) => {
+        if(!bool)
+            setShareFile(null);
+    }
+
+    return (<>
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
@@ -121,25 +132,47 @@ function FilesExplorerUI(props: { files: PolyFileBase[] }) {
                             <StyledTableCell align="right" style={{ color: file.id === hover ? "#922FDF" : "#000" }}>{file.ownerId}</StyledTableCell>
                             <StyledTableCell align="right" style={{ color: file.id === hover ? "#922FDF" : "#000" }}>{file.lastModified}</StyledTableCell>
                             <StyledTableCell align="right">
-                                <ActionsMenu />
+                                <ActionsMenu file={file} setShareFile={setShareFile} />
                             </StyledTableCell>
                         </StyledTableRow>
                     ))}
                 </TableBody>
             </Table>
         </TableContainer>
-    );
+        <SharePageModal pageId={shareFile?.id ?? ""} fileName={shareFile?.name ?? ""} modal={shareModal} setModal={setModal} />
+    </>);
 }
 
-function ActionsMenu(props: {}) {
+function ActionsMenu(props: {file: PolyFileBase, setShareFile: (arg: any) => void}) {
+    const { file, setShareFile } = props;
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const { addAlert } = useContext(AlertContext);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const onShare = () =>{
+        if(file instanceof PolyFile)
+            setShareFile(file);
+    }
+
+    const onDelete = () => {
+        deleteFile(file).then((result) => {
+            if(result){
+                addAlert(result as PolyAlert);
+                if(result.severity === "success"){
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+            }
+        })
+    }
 
     return <Box>
         <IconButton
@@ -155,19 +188,13 @@ function ActionsMenu(props: {}) {
             MenuListProps={{
                 'aria-labelledby': 'actions-button',
             }}>
-            <MenuItem>
-                <ListItemIcon>
-                    <Visibility fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Show</ListItemText>
-            </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={onShare}>
                 <ListItemIcon>
                     <Share fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Share</ListItemText>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={onDelete}>
                 <ListItemIcon>
                     <Delete fontSize="small" />
                 </ListItemIcon>

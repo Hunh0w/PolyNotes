@@ -29,7 +29,7 @@ import {
 import ProfileMenu from "./ProfileMenu";
 import { getProfileInfos } from "../utils/auth-manager";
 import CreatePageModal from "./modals/CreatePageModal";
-import {useContext, useState} from "react";
+import {ReactNode, useContext, useState} from "react";
 import {UserContext} from "./auth/AuthChecker";
 import {PolyFolder} from "./files/impl/PolyFolder";
 import {PolyFileBase} from "./files/PolyFileBase";
@@ -163,11 +163,16 @@ export default function Sidebar(props: Props) {
     const [open, setOpen] = React.useState(true);
     const [ selectedFile, setSelectedFile ] = useState<PolyFileBase | null>(null);
 
+    const navigate = useNavigate();
+
+    const { files, shared } = useContext(UserContext);
+
 
     const profileInfos = getProfileInfos();
     if (!profileInfos) return <></>
     const firstletters = profileInfos.given_name.charAt(0).toUpperCase() + profileInfos.family_name.charAt(0).toUpperCase();
-    const nickname = capitalize(profileInfos.family_name) + " " + capitalize(profileInfos.given_name);
+    const nickname = profileInfos.nickname;
+    const userName = capitalize(profileInfos.family_name) + " " + capitalize(profileInfos.given_name);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -194,7 +199,7 @@ export default function Sidebar(props: Props) {
                         <MenuIcon />
                     </IconButton>
                     <Box>
-                        <img src={"/img/polybunny.png"} width={60} alt={"polytech do bunny"} />
+                        <img src={"/img/polybunny.png"} width={60} alt={"polytech do bunny"} style={{cursor: "pointer"}} onClick={() => navigate("/home")} />
                     </Box>
                     <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <span style={{ "color": "purple" }}>Poly</span><span style={{ "color": "black" }}>Notes</span>
@@ -214,6 +219,7 @@ export default function Sidebar(props: Props) {
                         <ProfileMenu
                             letters={firstletters}
                             nickname={nickname}
+                            userName={userName}
                             color={"#a200ca"} />
                     </Box>
                 </Toolbar>
@@ -230,16 +236,8 @@ export default function Sidebar(props: Props) {
                 </Box>
                 <List>
                     <FileComponent drawerState={open} folder={null} level={0} setSelectedFile={setSelectedFile} selectedFile={selectedFile} />
-                    <NestedList disabled={!open} icon={<Share />} text={"Shared with Me"}>
-                        {["5", "6", "7", "8"].map((value, index) => (
-                            <ListItemButton sx={{ pl: 4 }} key={index}>
-                                <ListItemIcon>
-                                    <Article />
-                                </ListItemIcon>
-                                <ListItemText primary={"document " + value} />
-                            </ListItemButton>
-                        ))}
-                    </NestedList>
+
+                    <SharedFilesComponent drawerState={open} folder={null} level={0} />
                 </List>
                 <Divider />
                 <List>
@@ -277,12 +275,39 @@ export default function Sidebar(props: Props) {
     );
 }
 
+function SharedFilesComponent(props: {drawerState?: boolean, folder: PolyFolder | null, level: number}) {
+    const { shared } = useContext(UserContext);
+    const navigate = useNavigate();
+
+    const id = props.folder ? props.folder.id : null;
+    const name = props.folder ? props.folder.name : "Shared";
+
+    const filesInFolder = shared.filter((file) => file.parentId === id);
+
+    const style: React.CSSProperties = {
+        marginLeft: props.level*10
+    }
+
+    return <NestedList disabled={!props.drawerState} icon={props.folder === null ? <Share /> : <Folder />} text={name} style={style}>
+        {filesInFolder.map((file, index) => {
+            if(file.isDirectory) return <SharedFilesComponent drawerState={props.drawerState} key={index} folder={file as PolyFolder} level={props.level+1} />
+            return <ListItemButton sx={{ pl: 3 }} key={index} style={style} onClick={() => navigate("/page/"+file.id)}>
+                <ListItemIcon>
+                    {file.isDirectory ? <Folder /> : <Article />}
+                </ListItemIcon>
+                <ListItemText primary={file.name} />
+            </ListItemButton>
+        })}
+    </NestedList>
+}
+
+
 function FileComponent(props: {drawerState?: boolean, folder: PolyFolder | null, level: number, setSelectedFile: (file: PolyFileBase | null) => void, selectedFile: PolyFileBase | null}) {
     const { files } = useContext(UserContext);
     const navigate = useNavigate();
 
     const id = props.folder ? props.folder.id : null;
-    const name = props.folder ? props.folder.name : "Workspace";
+    const name = props.folder ? props.folder.name : "My Workspace";
 
     const filesInFolder = files.filter((file) => file.parentId === id);
 
@@ -292,7 +317,7 @@ function FileComponent(props: {drawerState?: boolean, folder: PolyFolder | null,
 
     let boxStyle = {};
 
-    if(props.selectedFile === null && props.selectedFile === props.folder){
+    if(props.selectedFile === null && props.selectedFile === props.folder && props.folder){
         boxStyle = {
             ...boxStyle,
             color: "#924ac4"
@@ -306,10 +331,6 @@ function FileComponent(props: {drawerState?: boolean, folder: PolyFolder | null,
 
     const onClick = () => {
         props.setSelectedFile(props.folder);
-    }
-
-    let disabledStyle: React.CSSProperties = {
-
     }
 
     return <NestedList disabled={!props.drawerState} icon={props.folder === null ? <AccountTree /> : <Folder />} text={name} style={style} onClick={onClick} boxStyle={boxStyle}>

@@ -40,13 +40,13 @@ export default function SharePageModal(props: {pageId: string, fileName: string,
 
     const [ isEditor, setIsEditor ] = useState(false);
 
-    const emailRef = useRef();
+    const identifierRef = useRef();
 
     const onCreate = () => {
-        const emailObj: any = emailRef.current;
-        if(!emailObj) return;
-        const email = emailObj.value;
-        if(!email) return;
+        const identifierObj: any = identifierRef.current;
+        if(!identifierObj) return;
+        const identifier = identifierObj.value;
+        if(!identifier) return;
 
         const type = isEditor ? "editor" : "viewer";
 
@@ -57,19 +57,19 @@ export default function SharePageModal(props: {pageId: string, fileName: string,
                 "Authorization": "Bearer "+localStorage.getItem("access_token")
             },
             body: JSON.stringify({
-              email: email,
+              identifier: identifier,
               type: type
             })
         }).then(async (response) => {
             if(response.status === 200) {
-                addAlert({message: `${email} successfully set as ${type} to file ${fileName}`, severity: "success"})
+                addAlert({message: `${identifier} successfully set as ${type} to file ${fileName}`, severity: "success"})
             }else if(response.status === 403){
                 addAlert({message: "You don't have permission to change members of this Page", severity: "warning"})
             }else if(response.status === 404){
                 const resultObj = await response.json();
                 const message = resultObj.message;
                 if(message && message.toLowerCase().includes("user not found")){
-                    addAlert({message: `User ${email} not found`, severity: "warning"});
+                    addAlert({message: `User ${identifier} not found`, severity: "warning"});
                 }else {
                     addAlert({message: `File ${fileName} not found`, severity: "warning"});
                 }
@@ -92,7 +92,7 @@ export default function SharePageModal(props: {pageId: string, fileName: string,
                         <FormControlLabel control={<Switch color={"secondary"} onChange={(evt) => setIsEditor(evt.target.checked)} />} label={"Is " + (isEditor ? "Editor" : "Viewer")} />
                     </FormGroup>
                     <Box display={"flex"} justifyContent={"center"} alignItems={"center"} flexDirection={"column"}>
-                        <TextField placeholder={"Email..."} sx={{mt: 3, width: "80%"}} inputRef={emailRef} />
+                        <TextField placeholder={"Nickname or Email"} sx={{mt: 3, width: "80%"}} inputRef={identifierRef} />
 
                         <StyledButton sx={{mt: 3, width: "60%", height: "50px"}} onClick={onCreate}>Share</StyledButton>
                     </Box>

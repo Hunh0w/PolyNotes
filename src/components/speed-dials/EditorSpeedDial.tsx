@@ -5,16 +5,17 @@ import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
-import {AddBox, PlusOne, ViewColumn, ViewWeek} from '@mui/icons-material';
+import {AddBox, Delete, PlusOne, ViewColumn, ViewWeek} from '@mui/icons-material';
 import React, {useContext, useState} from 'react';
 import { BlocksContext } from '../files/PolyFileEditor';
 import {DropdownBlocks, toJson} from '../blocks/BlockFactory';
 import { useNavigate } from 'react-router-dom';
 import { url } from '../../utils/conf';
-import { AlertContext } from '../AlertManager';
+import {AlertContext, PolyAlert} from '../AlertManager';
 import {Divider} from "@mui/material";
 import SharePageModal from "../modals/SharePageModal";
 import {PolyFile} from "../files/impl/PolyFile";
+import {deleteFile} from "../../services/FilesService";
 
 export default function EditorSpeedDial(props: {}) {
 
@@ -70,6 +71,18 @@ export default function EditorSpeedDial(props: {}) {
         setAnchorEl(null);
     }
 
+    const onDelete = () => {
+        deleteFile(file).then((result) => {
+            if(result){
+                addAlert(result as PolyAlert);
+                if(result.severity === "success"){
+                    setTimeout(() => {
+                        navigate("/home")
+                    }, 1000);
+                }
+            }
+        })
+    }
     return (
         <>
             <SpeedDial
@@ -97,6 +110,12 @@ export default function EditorSpeedDial(props: {}) {
                 <SpeedDialAction
                     icon={<FileCopyIcon />}
                     tooltipTitle={"Clone"}
+                />
+
+                <SpeedDialAction
+                    icon={<Delete />}
+                    tooltipTitle={"Delete"}
+                    onClick={onDelete}
                 />
 
                 <SpeedDialAction

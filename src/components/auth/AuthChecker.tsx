@@ -4,24 +4,28 @@ import { url } from "../../utils/conf";
 import Loader from "../loader/Loader";
 import {PolyFileBase} from "../files/PolyFileBase";
 import {getOwnedFiles} from "../../services/FilesService";
+import {PolyFile} from "../files/impl/PolyFile";
 
 const UserContextDefault = {
-    files: []
+    files: [],
+    shared: []
 };
 
 interface UserContextPrototype {
     files: PolyFileBase[]
+    shared: PolyFile[]
 }
 export const UserContext = React.createContext<UserContextPrototype>(UserContextDefault);
 
 interface APIResponse {
     files: PolyFileBase[]
+    shared: PolyFile[]
     checked: boolean
 }
 
 export default function AuthChecker(props: { children: any, loading: boolean }) {
 
-    const [ response, setResponse ] = useState<APIResponse>({files: [], checked: false});
+    const [ response, setResponse ] = useState<APIResponse>({files: [], shared: [], checked: false});
     const navigate = useNavigate();
 
     const check = () => {
@@ -46,19 +50,20 @@ export default function AuthChecker(props: { children: any, loading: boolean }) 
             const authCheckStatus: number = result[1];
 
             if(filesResult.files){
-                setResponse({files: filesResult.files, checked: authCheckStatus === 200})
+                setResponse({files: filesResult.files, shared: filesResult.shared, checked: authCheckStatus === 200})
             }
         })
     }
 
     useEffect(() => {
-        setTimeout(check, 2000)
+        check();
     }, []);
 
     if (!response.checked || props.loading) return <Loader />
 
     const UserContextValue: UserContextPrototype = {
-        files: response.files
+        files: response.files,
+        shared: response.shared
     }
 
     return <UserContext.Provider value={UserContextValue}>

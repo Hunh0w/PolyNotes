@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { ReactNode, useEffect, useState } from "react";
+import {ReactNode, useContext, useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { url } from "../../utils/conf";
 import { generateMatrixBlocks } from "../blocks/BlockFactory";
@@ -9,8 +9,10 @@ import { PolyFolder } from "./impl/PolyFolder";
 import { PolyFileBase } from "./PolyFileBase";
 import PolyFileEditor from "./PolyFileEditor";
 import {getPathOfFile} from "../../utils/files-utils";
+import {UserContext} from "../auth/AuthChecker";
 
-export default function PolyFileLoader(props: { id?: string, file: PolyFileBase, files: PolyFileBase[]}) {
+export default function PolyFileLoader(props: { id?: string, file: PolyFileBase}) {
+    const {files} = useContext(UserContext);
 
     if (!props.id) return <></>
 
@@ -23,7 +25,5 @@ export default function PolyFileLoader(props: { id?: string, file: PolyFileBase,
         </Box>
     }
 
-    console.log(props.file);
-
-    return <PolyFileEditor key={props.file.getHash()} file={props.file as PolyFile} files={props.files} pageId={props.id} />
+    return <PolyFileEditor key={props.file.getHash()} file={props.file as PolyFile} files={files} pageId={props.id} />
 }

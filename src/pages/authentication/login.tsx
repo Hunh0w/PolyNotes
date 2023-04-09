@@ -8,22 +8,22 @@ export default function LoginPage() {
 
     const navigate = useNavigate();
 
-    const email_ref = useRef(null);
+    const identifier_ref = useRef(null);
     const password_ref = useRef(null);
 
-    const [emailError, setEmailError] = useState<string | undefined>(undefined);
+    const [identifierError, setIdentifierError] = useState<string | undefined>(undefined);
     const [passwordError, setPasswordError] = useState<InputError | undefined>(undefined);
 
     const [apiError, setApiError] = useState<string | undefined>(undefined);
 
     const verify = (): boolean => {
-        const email: any = email_ref.current;
+        const identifier: any = identifier_ref.current;
         const password: any = password_ref.current;
 
         let pass = true;
 
-        if (email.value === "") {
-            setEmailError("cannot be empty")
+        if (identifier.value === "") {
+            setIdentifierError("cannot be empty")
             pass = false;
         }
 
@@ -39,11 +39,11 @@ export default function LoginPage() {
 
         if (!verify()) return;
 
-        const email: any = email_ref.current;
+        const identifier: any = identifier_ref.current;
         const password: any = password_ref.current;
 
         const login_payload = {
-            email: email.value,
+            identifier: identifier.value,
             password: password.value
         }
 
@@ -55,7 +55,7 @@ export default function LoginPage() {
             body: JSON.stringify(login_payload)
         }).then(resp => {
             if (resp.status === 401) {
-                setApiError("Invalid email or password")
+                setApiError("Invalid identifier or password")
                 return;
             }
             if (resp.status === 200) {
@@ -93,13 +93,13 @@ export default function LoginPage() {
             <Divider variant="middle" sx={{ "width": "70%", mb: 5 }} />
             <Box display={"flex"} justifyContent="center" width={"100%"} mt={2}>
                 <TextField
-                    error={emailError ? true : false}
-                    inputRef={email_ref}
+                    error={identifierError ? true : false}
+                    inputRef={identifier_ref}
                     variant="outlined"
-                    label="E-Mail Address"
+                    label="Nickname or Email"
                     sx={{ "width": "300px" }}
-                    onChange={() => resetError(emailError, setEmailError)}
-                    helperText={emailError}
+                    onChange={() => resetError(identifierError, setIdentifierError)}
+                    helperText={identifierError}
                 />
             </Box>
             <Box display={"flex"} flexDirection="column" alignItems="center" width={"100%"} mt={3}>

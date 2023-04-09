@@ -22,6 +22,7 @@ export default function RegisterPage() {
     const firstname_ref = useRef(null);
     const lastname_ref = useRef(null);
     const email_ref = useRef(null);
+    const nickname_ref = useRef(null);
     const password_ref = useRef(null);
     const password_confirm_ref = useRef(null);
     const cgu_ref = useRef(null);
@@ -31,6 +32,7 @@ export default function RegisterPage() {
     const [firstnameError, setFirstnameError] = useState<string | undefined>(undefined);
     const [lastnameError, setLastnameError] = useState<string | undefined>(undefined);
     const [emailError, setEmailError] = useState<string | undefined>(undefined);
+    const [nicknameError, setNicknameError] = useState<string | undefined>(undefined);
 
     const [passwordError, setPasswordError] = useState<InputError | undefined>(undefined);
     const [passwordConfirmError, setPasswordConfirmError] = useState<InputError | undefined>(undefined);
@@ -41,25 +43,32 @@ export default function RegisterPage() {
         const firstname: any = firstname_ref.current;
         const lastname: any = lastname_ref.current;
         const email: any = email_ref.current;
+        const nickname: any = nickname_ref.current;
         const password: any = password_ref.current;
         const password_confirm: any = password_confirm_ref.current;
         const cgu: any = cgu_ref.current;
 
         let pass = true;
 
+        const emptyError = "cannot be empty";
+
         if(firstname.value === ""){
-            setFirstnameError("cannot be empty")
+            setFirstnameError(emptyError)
             pass = false;
         }
 
         if(lastname.value === ""){
-            setLastnameError("cannot be empty")
+            setLastnameError(emptyError)
             pass = false;
         }
 
         if(email.value === ""){
-            setEmailError("cannot be empty")
+            setEmailError(emptyError)
             pass = false;
+        }
+
+        if(nickname.value === ""){
+            setNicknameError(emptyError);
         }
 
         if(password.value !== password_confirm.value){
@@ -68,9 +77,8 @@ export default function RegisterPage() {
             setPasswordConfirmError({message: message})
             pass = false;
         }else if(password.value === "") {
-            const message = "cannot be empty";
-            setPasswordError({message: message})
-            setPasswordConfirmError({message: message})
+            setPasswordError({message: emptyError})
+            setPasswordConfirmError({message: emptyError})
             pass = false;
         }
 
@@ -89,12 +97,14 @@ export default function RegisterPage() {
         const lastname: any = lastname_ref.current;
         const email: any = email_ref.current;
         const password: any = password_ref.current;
+        const nickname: any = nickname_ref.current;
 
         const register_payload = {
             firstname: firstname.value,
             lastname: lastname.value,
             email: email.value,
-            password: password.value
+            password: password.value,
+            nickname: nickname.value
         }
 
         fetch(url+"/register", {
@@ -161,6 +171,17 @@ export default function RegisterPage() {
                     sx={{ "width": "300px" }}
                     inputRef={email_ref}
                     helperText={emailError}
+                />
+            </Box>
+            <Box display={"flex"} justifyContent="center" width={"100%"} mt={2}>
+                <TextField
+                    error={nicknameError ? true : false}
+                    onChange={() => resetError(nicknameError, setNicknameError)}
+                    variant="outlined"
+                    label="Nickname"
+                    sx={{ "width": "300px" }}
+                    inputRef={nickname_ref}
+                    helperText={nicknameError}
                 />
             </Box>
             <Divider variant="middle" sx={{ "width": "50%", mt: 3 }} />

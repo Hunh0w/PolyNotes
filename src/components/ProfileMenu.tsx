@@ -18,6 +18,7 @@ interface Props {
     letters?: string
     color?: string
     nickname?: string
+    userName?: string
 }
 
 export default function ProfileMenu(props: Props){
@@ -90,9 +91,12 @@ export default function ProfileMenu(props: Props){
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
             <MenuItem>
-                <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", px: 3}}>
-                    <Typography variant={"h5"} fontWeight={"bold"}>
-                        {props.nickname??"Font Vincent"}
+                <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", px: 3}}>
+                    <Typography variant={"h5"}>
+                        {props.userName??"Unknown"}
+                    </Typography>
+                    <Typography variant={"h6"} fontWeight={"bold"}>
+                       {props.nickname??"Unknown"}
                     </Typography>
                 </Box>
             </MenuItem>
