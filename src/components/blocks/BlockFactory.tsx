@@ -4,11 +4,14 @@ import TextBlock, {HeaderTextType} from "./impl/TextBlock";
 import IconButton from "@mui/material/IconButton";
 import {Cloud, ContentCopy, ContentCut, ContentPaste, MoreVert} from "@mui/icons-material";
 import {Divider, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Paper, Typography} from "@mui/material";
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {BlocksContext} from "../files/PolyFileEditor";
 import DatabaseBlock from "./impl/database/DatabaseBlock";
 import {generateId} from "../../utils/string-utils";
 import KanbanBlock from "./impl/kanban/KanbanBlock";
+import ImageBlock from "./impl/ImageBlock";
+import CreateImageBlockModal from "../modals/CreateImageBlockModal";
+import MarkdownBlock from "./impl/MarkdownBlock";
 
 interface APIBlock {
     id: string
@@ -25,14 +28,21 @@ const types = [
     "h4",
     "h5",
     "h6",
-    "--",
     "p",
+    "--",
+    "Image",
+    "Markdown",
     "--",
     "Database",
     "Kanban"
 ]
 
-export function DropdownBlocks(props: {handleClose: () => void, anchorEl: any, currentBlock?: BaseBlock}) {
+export function DropdownBlocks(props: {
+    handleClose: () => void,
+    anchorEl: any,
+    currentBlock?: BaseBlock,
+    setOpenCreateImage: (arg: any) => void
+}) {
     const open = Boolean(props.anchorEl);
 
     const { setBlockType, createNewBlock } = useContext(BlocksContext);
@@ -99,6 +109,11 @@ export function DropdownBlocks(props: {handleClose: () => void, anchorEl: any, c
                 }], true);
         }else if(itemType.toLowerCase() === "kanban"){
             block = new KanbanBlock([], true);
+        }else if(itemType.toLowerCase() === "image") {
+            props.setOpenCreateImage(true);
+            return;
+        }else if(itemType.toLowerCase() === "markdown"){
+            block = new MarkdownBlock("", true);
         }
 
         if(!block) return;
@@ -168,6 +183,16 @@ export function newBlock(block: APIBlock): BaseBlock | null {
     }else if(kind.toLowerCase() === "kanban") {
         const { containers } = block.values;
         baseBlock = new KanbanBlock(containers, !Boolean(id));
+        if(id) baseBlock.setId(id);
+        return baseBlock;
+    }else if(kind.toLowerCase() === "image"){
+        const { url, size } = block.values;
+        baseBlock = new ImageBlock(url, size, !Boolean(id));
+        if(id) baseBlock.setId(id);
+        return baseBlock;
+    }else if(kind.toLowerCase() === "markdown"){
+        const { text } = block.values;
+        baseBlock = new MarkdownBlock(text, true);
         if(id) baseBlock.setId(id);
         return baseBlock;
     }

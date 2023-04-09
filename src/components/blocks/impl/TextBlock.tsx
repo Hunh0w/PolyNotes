@@ -9,6 +9,7 @@ import Paragraph from "@tiptap/extension-paragraph";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import {Placeholder} from "@tiptap/extension-placeholder";
 import {DropdownBlocks} from "../BlockFactory";
+import CreateImageBlockModal from "../../modals/CreateImageBlockModal";
 
 interface Props {
     text: string
@@ -61,6 +62,7 @@ function Component(props: Props) {
     const { file, addNewBlock, deleteBlock, focusedBlock } = useContext(BlocksContext);
 
     const isFocused = focusedBlock ? focusedBlock.id === props.block?.id : false;
+    const [ openCreateImage, setOpenCreateImage ] = useState(false);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const onAddBlock = (event: any) => {
@@ -104,7 +106,6 @@ function Component(props: Props) {
             const currentText = editor?.getText().replaceAll("<br>", "");
             if(currentText && currentText.endsWith("\\")){
                 const newText = currentText.slice(0, currentText.length-1);
-                console.log(newText)
                 editor?.commands.setContent(`<${props.headerType}>${newText}</${props.headerType}>`);
                 props.setText(newText);
                 return;
@@ -115,7 +116,8 @@ function Component(props: Props) {
 
     return <Box width={"100%"} height={"100%"}>
         <EditorContent editor={editor} onKeyDownCapture={handleKeyDown} style={{ "height": "100%" }} />
-        <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} currentBlock={props.block} />
+        <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} currentBlock={props.block} setOpenCreateImage={setOpenCreateImage} />
+        <CreateImageBlockModal open={openCreateImage} setOpen={setOpenCreateImage} />
     </Box>
 
 }

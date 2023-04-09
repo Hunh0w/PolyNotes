@@ -16,6 +16,7 @@ import {Divider} from "@mui/material";
 import SharePageModal from "../modals/SharePageModal";
 import {PolyFile} from "../files/impl/PolyFile";
 import {deleteFile} from "../../services/FilesService";
+import CreateImageBlockModal from "../modals/CreateImageBlockModal";
 
 export default function EditorSpeedDial(props: {}) {
 
@@ -24,6 +25,7 @@ export default function EditorSpeedDial(props: {}) {
     const { addAlert } = useContext(AlertContext);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [ openCreateImage, setOpenCreateImage ] = useState(false);
 
     const [shareModal, setShareModal] = useState(false);
 
@@ -127,8 +129,9 @@ export default function EditorSpeedDial(props: {}) {
                     }}
                 />
             </SpeedDial >
-            <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} />
+            <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} setOpenCreateImage={setOpenCreateImage} />
             <SharePageModal pageId={file.id} fileName={file.name} modal={shareModal} setModal={setShareModal} />
+            <CreateImageBlockModal open={openCreateImage} setOpen={setOpenCreateImage} />
         </>
     );
 }
