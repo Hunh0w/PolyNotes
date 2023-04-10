@@ -39,7 +39,7 @@ export default class ImageBlock extends BaseBlock {
 function Component(props: {block: ImageBlock}){
 
     const size_coef = props.block.size * 0.1;
-    const width = 100 * size_coef;
+    const width = Math.round(100 * size_coef);
 
     return <Box width={"100%"}>
         <img src={props.block.url} width={width} />

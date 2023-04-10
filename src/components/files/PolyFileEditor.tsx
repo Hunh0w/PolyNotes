@@ -42,7 +42,6 @@ export default function PolyFileEditor(props: { file: PolyFile, files: PolyFileB
     const navigate = useNavigate();
 
     const [blocks, setBlocks] = useState<BaseBlock[][]>(props.file.blocks);
-    const [fileName, setFileName] = useState<string>(props.file.name);
 
     const [focusedBlock, setFocusedBlock] = useState<BaseBlock | null>(null);
 
@@ -149,17 +148,17 @@ export default function PolyFileEditor(props: { file: PolyFile, files: PolyFileB
         extensions: [
             StarterKit
         ],
-        content: `${fileName}`,
+        content: `${props.file.name}`,
         editable: props.file.canEdit(),
         onUpdate: ({ editor }) => {
             const newText = editor.getText();
-            setFileName(newText);
+            props.file.name = newText;
         },
         onBlur: ({ editor, event }) => {
             const newText = editor.getText();
             if (newText === "") {
                 editor.commands.setContent(`??`)
-                setFileName(fileName);
+                props.file.name = "??";
                 return;
             }
         }
