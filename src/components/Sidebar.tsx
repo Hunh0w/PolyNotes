@@ -24,7 +24,7 @@ import {
     Delete,
     Folder,
     Share,
-    Star, AccountTree,
+    Star, AccountTree, Timer, TimerOutlined,
 } from "@mui/icons-material";
 import ProfileMenu from "./ProfileMenu";
 import { getProfileInfos } from "../utils/auth-manager";
@@ -238,6 +238,17 @@ export default function Sidebar(props: Props) {
                     <FileComponent drawerState={open} folder={null} level={0} setSelectedFile={setSelectedFile} selectedFile={selectedFile} />
 
                     <SharedFilesComponent drawerState={open} folder={null} level={0} />
+                </List>
+                <Divider />
+                <List>
+                    <ListItemButton sx={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                        <ListItemIcon sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <TimerOutlined />
+                        </ListItemIcon>
+                        {open &&
+                            <ListItemText primary={"Time Tracking"} />
+                        }
+                    </ListItemButton>
                 </List>
                 <Divider />
                 <List>
