@@ -1,14 +1,8 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {ReactNode, useContext, useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom";
-import { url } from "../../utils/conf";
-import { generateMatrixBlocks } from "../blocks/BlockFactory";
-import Loader from "../loader/Loader";
 import { PolyFile } from "./impl/PolyFile";
-import { PolyFolder } from "./impl/PolyFolder";
 import { PolyFileBase } from "./PolyFileBase";
 import PolyFileEditor from "./PolyFileEditor";
-import {getPathOfFile} from "../../utils/files-utils";
 import {UserContext} from "../auth/AuthChecker";
 
 export default function PolyFileLoader(props: { id?: string, file: PolyFileBase}) {

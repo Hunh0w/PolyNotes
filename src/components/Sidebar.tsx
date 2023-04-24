@@ -241,7 +241,7 @@ export default function Sidebar(props: Props) {
                 </List>
                 <Divider />
                 <List>
-                    <ListItemButton sx={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                    <ListItemButton onClick={() => navigate("/time-tracker")} sx={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
                         <ListItemIcon sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                             <TimerOutlined />
                         </ListItemIcon>

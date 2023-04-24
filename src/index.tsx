@@ -15,6 +15,7 @@ import AlertManager from './components/AlertManager';
 import Lab from "./pages/main/lab";
 import CGUPage from "./pages/cgu";
 import EmailVerifPage from "./pages/authentication/email_verif";
+import TimeTrackerPage from "./pages/main/time_track";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route path={"page/:pageId"} element={<PolyPage />} />
       <Route path={"cgu"} element={<CGUPage />} />
       <Route path={"register/verify/:token"} element={<EmailVerifPage />} />
+      <Route path={"time-tracker"} element={<TimeTrackerPage />} />
     </Route>
   )
 )
