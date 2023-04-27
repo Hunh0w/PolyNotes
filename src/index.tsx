@@ -35,6 +35,7 @@ const router = createBrowserRouter(
       <Route path={"cgu"} element={<CGUPage />} />
       <Route path={"register/verify/:token"} element={<EmailVerifPage />} />
       <Route path={"time-tracker"} element={<TimeTrackerPage />} />
+      <Route path={"lab"} element={<Lab />} />
     </Route>
   )
 )

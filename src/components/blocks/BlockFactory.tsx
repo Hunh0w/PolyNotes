@@ -12,6 +12,9 @@ import KanbanBlock from "./impl/kanban/KanbanBlock";
 import ImageBlock from "./impl/ImageBlock";
 import CreateImageBlockModal from "../modals/CreateImageBlockModal";
 import MarkdownBlock from "./impl/MarkdownBlock";
+import DurationEachDaysBlock from "./impl/charts/DurationEachDaysBlock";
+import DurationEachDaysProjectBlock from "./impl/charts/DurationDaysProjectBlock";
+import DurationEachProjectBlock from "./impl/charts/DurationEachProjectBlock";
 
 interface APIBlock {
     id: string
@@ -32,6 +35,7 @@ const types = [
     "--",
     "Image",
     "Markdown",
+    "Chart",
     "--",
     "Database",
     "Kanban"
@@ -41,7 +45,8 @@ export function DropdownBlocks(props: {
     handleClose: () => void,
     anchorEl: any,
     currentBlock?: BaseBlock,
-    setOpenCreateImage: (arg: any) => void
+    setOpenCreateImage: (arg: any) => void,
+    setOpenCreateChart: (arg: any) => void
 }) {
     const open = Boolean(props.anchorEl);
 
@@ -114,6 +119,9 @@ export function DropdownBlocks(props: {
             return;
         }else if(itemType.toLowerCase() === "markdown"){
             block = new MarkdownBlock("", true);
+        }else if(itemType.toLowerCase() === "chart") {
+            props.setOpenCreateChart(true);
+            return;
         }
 
         if(!block) return;
@@ -193,6 +201,19 @@ export function newBlock(block: APIBlock): BaseBlock | null {
     }else if(kind.toLowerCase() === "markdown"){
         const { text } = block.values;
         baseBlock = new MarkdownBlock(text, true);
+        if(id) baseBlock.setId(id);
+        return baseBlock;
+    }else if(kind.toLowerCase() === "duration-each-days-chart"){
+        baseBlock = new DurationEachDaysBlock(true);
+        if(id) baseBlock.setId(id);
+        return baseBlock;
+    }else if(kind.toLowerCase() === "duration-each-days-project-chart"){
+        const { projectName } = block.values;
+        baseBlock = new DurationEachDaysProjectBlock(projectName, true);
+        if(id) baseBlock.setId(id);
+        return baseBlock;
+    }else if(kind.toLowerCase() === "duration-each-project-chart"){
+        baseBlock = new DurationEachProjectBlock(true);
         if(id) baseBlock.setId(id);
         return baseBlock;
     }

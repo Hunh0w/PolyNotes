@@ -10,6 +10,7 @@ import { UniqueIdentifier } from "@dnd-kit/core";
 import {Placeholder} from "@tiptap/extension-placeholder";
 import {DropdownBlocks} from "../BlockFactory";
 import CreateImageBlockModal from "../../modals/CreateImageBlockModal";
+import ChooseChartModal from "../../modals/ChooseChartModal";
 
 interface Props {
     text: string
@@ -63,6 +64,7 @@ function Component(props: Props) {
 
     const isFocused = focusedBlock ? focusedBlock.id === props.block?.id : false;
     const [ openCreateImage, setOpenCreateImage ] = useState(false);
+    const [ openCreateChart, setOpenCreateChart ] = useState(false);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const onAddBlock = (event: any) => {
@@ -116,8 +118,9 @@ function Component(props: Props) {
 
     return <Box width={"100%"} height={"100%"}>
         <EditorContent editor={editor} onKeyDownCapture={handleKeyDown} style={{ "height": "100%" }} />
-        <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} currentBlock={props.block} setOpenCreateImage={setOpenCreateImage} />
+        <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} currentBlock={props.block} setOpenCreateImage={setOpenCreateImage} setOpenCreateChart={setOpenCreateChart} />
         <CreateImageBlockModal open={openCreateImage} setOpen={setOpenCreateImage} />
+        <ChooseChartModal open={openCreateChart} setOpen={setOpenCreateChart} />
     </Box>
 
 }

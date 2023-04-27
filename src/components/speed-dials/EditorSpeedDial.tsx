@@ -17,6 +17,7 @@ import SharePageModal from "../modals/SharePageModal";
 import {PolyFile} from "../files/impl/PolyFile";
 import {deleteFile} from "../../services/FilesService";
 import CreateImageBlockModal from "../modals/CreateImageBlockModal";
+import ChooseChartModal from "../modals/ChooseChartModal";
 
 export default function EditorSpeedDial(props: {}) {
 
@@ -26,6 +27,7 @@ export default function EditorSpeedDial(props: {}) {
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [ openCreateImage, setOpenCreateImage ] = useState(false);
+    const [ openCreateChart, setOpenCreateChart ] = useState(false);
 
     const [shareModal, setShareModal] = useState(false);
 
@@ -129,9 +131,10 @@ export default function EditorSpeedDial(props: {}) {
                     }}
                 />
             </SpeedDial >
-            <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} setOpenCreateImage={setOpenCreateImage} />
+            <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} setOpenCreateImage={setOpenCreateImage} setOpenCreateChart={setOpenCreateChart} />
             <SharePageModal pageId={file.id} fileName={file.name} modal={shareModal} setModal={setShareModal} />
             <CreateImageBlockModal open={openCreateImage} setOpen={setOpenCreateImage} />
+            <ChooseChartModal open={openCreateChart} setOpen={setOpenCreateChart} />
         </>
     );
 }

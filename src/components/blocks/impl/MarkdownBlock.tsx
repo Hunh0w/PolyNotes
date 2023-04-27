@@ -8,6 +8,7 @@ import React, {useContext, useState} from "react";
 import {BlocksContext} from "../../files/PolyFileEditor";
 import {Highlight} from "@tiptap/extension-highlight";
 import {Typography} from "@tiptap/extension-typography"
+import ChooseChartModal from "../../modals/ChooseChartModal";
 
 export default class MarkdownBlock extends BaseBlock {
 
@@ -45,6 +46,7 @@ function Component(props: {block: MarkdownBlock}) {
     const { file, focusedBlock } = useContext(BlocksContext);
     const isFocused = focusedBlock ? focusedBlock.id === props.block?.id : false;
     const [ openCreateImage, setOpenCreateImage ] = useState(false);
+    const [ openCreateChart, setOpenCreateChart ] = useState(false);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const onAddBlock = (event: any) => {
@@ -72,7 +74,8 @@ function Component(props: {block: MarkdownBlock}) {
 
     return <Box width={"100%"} height={"100%"}>
         <EditorContent editor={editor} style={{ "height": "100%" }} />
-        <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} currentBlock={props.block} setOpenCreateImage={setOpenCreateImage} />
+        <DropdownBlocks handleClose={handleClose} anchorEl={anchorEl} currentBlock={props.block} setOpenCreateImage={setOpenCreateImage} setOpenCreateChart={setOpenCreateChart}/>
         <CreateImageBlockModal open={openCreateImage} setOpen={setOpenCreateImage} />
+        <ChooseChartModal open={openCreateChart} setOpen={setOpenCreateChart} />
     </Box>
 }
